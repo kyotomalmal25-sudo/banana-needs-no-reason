@@ -1,0 +1,2 @@
+:root { --font-geist-sans:Arial,"Yu Gothic",sans-serif; --font-noto-jp:"Yu Gothic",sans-serif; --font-geist-mono:"Courier New",monospace; }
+@media (max-width:680px) { .site-header nav { max-width:210px; } }
