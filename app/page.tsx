@@ -6,6 +6,14 @@ const rooms = [
   { number: "03", href: "/phone", title: "PeelDial BP-08", ja: "バナナ電話 / 開発中", note: "Reasonless contact unit" },
 ];
 
+const operatingNotes = [
+  { number: "01", glyph: "◎", title: "Subject 04", body: "Maintain eye contact. The specimen is already awake.", signal: "ATTENTIVE" },
+  { number: "02", glyph: "⌁", title: "Banana Unit", body: "Rotate the yellow object. Do not request a reason.", signal: "OPERATIONAL" },
+  { number: "03", glyph: "▤", title: "Forest Office", body: "Proceed without permission. Return when the signal disappears.", signal: "UNSUPERVISED" },
+  { number: "04", glyph: "↯", title: "Silence Mode", body: "Answers remain optional. Observation continues without comment.", signal: "LOW NOISE" },
+  { number: "05", glyph: "◇", title: "Return Signal", body: "Follow the peel. The shortest route is rarely a straight line.", signal: "NO REASON" },
+];
+
 export default function Home() {
   return (
     <SiteShell current="top" plate="EXHIBITION 08 / 2026">
@@ -36,6 +44,32 @@ export default function Home() {
               <span className="room-note">{room.note}</span><span className="room-arrow" aria-hidden="true">→</span>
             </a>
           ))}
+        </div>
+      </section>
+      <section className="operating-manual" aria-labelledby="operating-manual-title">
+        <div className="paper-layer paper-layer-back" aria-hidden="true" />
+        <div className="paper-layer paper-layer-middle" aria-hidden="true" />
+        <div className="manual-field">
+          <header className="manual-field-header">
+            <div>
+              <p className="kicker">Unnecessary instructions / DBNR 04</p>
+              <h2 id="operating-manual-title">Primate<br />Operating Manual</h2>
+            </div>
+            <p className="manual-field-note">A small collection of procedures for an animal already capable of ignoring them.</p>
+          </header>
+          <div className="operating-grid">
+            {operatingNotes.map((note) => (
+              <article className="operating-note" key={note.number}>
+                <div className="operating-icon" aria-hidden="true"><span>{note.glyph}</span></div>
+                <div className="operating-copy">
+                  <p className="operating-label">{note.number} / {note.signal}</p>
+                  <h3>{note.title}</h3>
+                  <p>{note.body}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="manual-stamp" aria-hidden="true"><strong>DBNR</strong><span>FOREST APPROVED</span></div>
         </div>
       </section>
     </SiteShell>

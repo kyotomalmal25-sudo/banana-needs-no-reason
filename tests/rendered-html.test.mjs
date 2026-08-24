@@ -22,6 +22,12 @@ test("server-renders the exhibition home", async () => {
   assert.match(html, /The Fourth Monkey/);
   assert.match(html, /Banana Protocol/);
   assert.match(html, /PeelDial BP-08/);
+  assert.match(html, /Primate/);
+  assert.match(html, /Operating Manual/);
+  assert.match(html, /Forest Office/);
+  assert.match(html, /世界の動物園/);
+  assert.match(html, /zoo\.sandiegozoo\.org/);
+  assert.match(html, /mandai\.com\/en\/singapore-zoo/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 

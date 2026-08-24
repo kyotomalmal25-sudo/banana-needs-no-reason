@@ -7,6 +7,13 @@ const links = [
   { id: "phone", href: "/phone", label: "Phone" },
 ];
 
+const fieldLinks = [
+  { href: "https://zoo.sandiegozoo.org/", label: "Subject Archive", meta: "San Diego" },
+  { href: "https://www.mandai.com/en/singapore-zoo.html", label: "Banana Affairs", meta: "Singapore" },
+  { href: "https://www.zoo-berlin.de/en", label: "Field Relations", meta: "Berlin" },
+  { href: "https://www.taronga.org.au/sydney-zoo", label: "Return to Forest", meta: "Sydney" },
+];
+
 export function SiteShell({ children, current, plate }: { children: ReactNode; current: string; plate: string }) {
   return (
     <main>
@@ -21,7 +28,33 @@ export function SiteShell({ children, current, plate }: { children: ReactNode; c
         <span className="header-plate">{plate}</span>
       </header>
       {children}
-      <footer className="site-footer"><span>Does a Banana Need a Reason?</span><span>バナナについては、譲歩しない。</span><span>2026 / FOREST OFFICE</span></footer>
+      <footer className="forest-footer">
+        <div className="forest-footer-lead">
+          <div className="footer-brand" aria-label="DBNR">
+            <span className="footer-brand-disc" aria-hidden="true">04</span>
+            <span>DBNR</span>
+          </div>
+          <p className="kicker">Private primate operations / est. 2026</p>
+          <h2>Forest Office</h2>
+          <p className="forest-statement">A private operational unit for banana handling, primate observation, and unnecessary certainty.</p>
+          <p className="forest-statement-ja">黄色い物体と、それを操作せずにはいられない生き物との、静かな関係を維持しています。</p>
+        </div>
+        <div className="forest-directory">
+          <p className="directory-title">Field network / 世界の動物園</p>
+          <nav aria-label="世界の動物園">
+            {fieldLinks.map((link) => (
+              <a href={link.href} key={link.href} target="_blank" rel="noreferrer">
+                <span>{link.label}</span><small>{link.meta}</small><b aria-hidden="true">↗</b>
+              </a>
+            ))}
+          </nav>
+        </div>
+        <div className="forest-footer-base">
+          <span>Does a Banana Need a Reason?</span>
+          <span>NO PUBLIC SERVICE IS CURRENTLY AVAILABLE.</span>
+          <span>2026 / FOREST OFFICE</span>
+        </div>
+      </footer>
     </main>
   );
 }
