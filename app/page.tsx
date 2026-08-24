@@ -18,7 +18,7 @@ export default function Home() {
           <p className="hero-answer">NO REASON REQUIRED. / 2026</p>
         </div>
         <div className="presence-strip" aria-label="チンパンジーの肖像断片">
-          <img src="/chimpanzee-profile.png" alt="黒いインクと黄色で描かれたチンパンジーの横顔の断片" />
+          <img src="/chimpanzee-profile.png" alt="黒いインクと黄緑で描かれたチンパンジーの正面肖像の断片" />
           <div className="presence-caption"><span>SUBJECT 04</span><strong>CHIMPANZEE</strong><span>STATUS / ATTENTIVE</span></div>
         </div>
         <aside className="hero-note"><span className="status-light" /><p>黄色は装飾ではない。<br />判断と作動のためにある。</p></aside>

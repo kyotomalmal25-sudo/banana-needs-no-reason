@@ -24,8 +24,8 @@ main { min-height:100vh; overflow:hidden; }
 .hero-copy h1,.page-intro h1,.phone-hero h1 { font-size:clamp(52px,8.4vw,126px); font-weight:520; line-height:.88; margin:22px 0 30px; }
 .hero-japanese { font-size:clamp(17px,1.8vw,26px); font-weight:760; } .hero-answer { border-left:6px solid var(--yellow); font-family:var(--font-geist-mono),monospace; font-size:11px; margin-top:20px; padding-left:12px; }
 .presence-strip { align-self:stretch; border-left:1px solid var(--ink); display:grid; grid-template-rows:1fr auto; min-height:520px; overflow:hidden; position:relative; }
-.presence-strip img { filter:contrast(1.08); height:100%; object-fit:cover; object-position:36% 34%; transform:scale(1.35); transition:transform 1.2s cubic-bezier(.2,.7,.2,1); width:100%; }
-.presence-strip:hover img { transform:scale(1.29) translateY(1%); }
+.presence-strip img { background:#f7f4ec; filter:contrast(1.04); height:100%; object-fit:cover; object-position:50% 31%; transform:scale(1.08); transition:transform 1.2s cubic-bezier(.2,.7,.2,1); width:100%; }
+.presence-strip:hover img { transform:scale(1.04) translateY(1%); }
 .presence-caption { background:var(--ink); color:var(--paper); display:grid; font-family:var(--font-geist-mono),monospace; font-size:9px; gap:5px; padding:15px; } .presence-caption strong { color:var(--yellow); font-size:12px; }
 .hero-note { align-items:center; display:flex; gap:14px; grid-column:1/-1; margin:22px 0 0 2vw; } .hero-note p { font-size:12px; font-weight:680; line-height:1.7; }
 .manifesto-band { align-items:center; background:var(--ink); color:var(--paper); display:flex; gap:28px; justify-content:space-between; min-height:112px; padding:24px clamp(20px,6vw,88px); }
@@ -44,7 +44,7 @@ main { min-height:100vh; overflow:hidden; }
 .profile-plate { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(330px,.65fr); }
 .portrait-sheet { background:#f7f4ec; border-right:1px solid var(--ink); min-height:750px; overflow:hidden; position:relative; }
 .portrait-sheet::before { border:1px solid rgba(21,20,17,.28); content:""; inset:28px; pointer-events:none; position:absolute; z-index:1; }
-.portrait-sheet img { height:100%; object-fit:cover; object-position:center; width:100%; }
+.portrait-sheet img { height:100%; object-fit:cover; object-position:center 31%; width:100%; }
 .portrait-sheet figcaption { bottom:45px; display:flex; font-family:var(--font-geist-mono),monospace; font-size:9px; justify-content:space-between; left:46px; position:absolute; right:46px; z-index:2; }
 .profile-copy { align-self:center; padding:clamp(42px,6vw,88px); } .profile-copy h2 { font-size:clamp(42px,5vw,76px); font-weight:540; margin:12px 0 28px; }
 .short-statement { font-size:16px; font-weight:680; line-height:2; }
