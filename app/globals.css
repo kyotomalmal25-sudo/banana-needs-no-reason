@@ -100,6 +100,8 @@ main { min-height:100vh; overflow:hidden; }
 .banana-hover-art .banana-peel { opacity:0; transform:rotate(2deg) scale(.78); width:min(132px,118%); }
 .banana-hover-art:hover .banana-intact,.eat-state:focus-visible .banana-intact { opacity:0; transform:rotate(-8deg) scale(.92); }
 .banana-hover-art:hover .banana-peel,.eat-state:focus-visible .banana-peel { opacity:1; transform:rotate(2deg) scale(1); }
+.state-buttons button.eat-state.selected:has(.banana-hover-art:hover),.state-buttons button.eat-state.selected:focus-visible { background:var(--paper); border-right-color:var(--line); color:var(--ink); }
+.state-buttons button.eat-state.selected:has(.banana-hover-art:hover) .state-number,.state-buttons button.eat-state.selected:focus-visible .state-number { color:var(--muted); }
 .state-readout { align-content:center; background:var(--ink); color:var(--paper); display:grid; gap:14px; padding:38px; } .state-readout p { color:var(--yellow); font-family:var(--font-geist-mono),monospace; font-size:12px; } .state-readout strong { font-size:15px; line-height:1.7; }
 
 .manual-intro { grid-template-columns:1fr auto; } .manual-summary { border-left:1px solid var(--ink); display:grid; font-family:var(--font-geist-mono),monospace; font-size:9px; gap:13px; padding:20px 0 20px 28px; }
