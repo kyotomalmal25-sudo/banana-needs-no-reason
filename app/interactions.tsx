@@ -3,19 +3,38 @@
 import { useState } from "react";
 
 const monkeyStates = [
-  { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。" },
-  { id: "hear", number: "02", ja: "聞かざる", en: "HEAR NO EVIL", note: "説明要求を受信しない。" },
-  { id: "speak", number: "03", ja: "言わざる", en: "SPEAK NO EVIL", note: "弁明を出力しない。" },
-  { id: "eat", number: "04", ja: "食べる", en: "EAT THE BANANA", note: "残された唯一の操作を実行する。" },
+  { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-line.png" },
+  { id: "hear", number: "02", ja: "聞かざる", en: "HEAR NO EVIL", note: "説明要求を受信しない。", image: "/monkey-hear-line.png" },
+  { id: "speak", number: "03", ja: "言わざる", en: "SPEAK NO EVIL", note: "弁明を出力しない。", image: "/monkey-speak-line.png" },
+  { id: "eat", number: "04", ja: "食べる", en: "EAT THE BANANA", note: "残された唯一の操作を実行する。", image: null },
 ];
 
 export function MonkeyStates() {
   const [active, setActive] = useState(monkeyStates[3]);
   return <div className="state-console">
-    <div className="state-buttons" role="tablist" aria-label="第四の猿の動作状態">
-      {monkeyStates.map((state) => <button type="button" role="tab" aria-selected={active.id === state.id} className={active.id === state.id ? "selected" : undefined} onClick={() => setActive(state)} key={state.id}><span>{state.number}</span><strong>{state.ja}</strong></button>)}
+    <div className="state-buttons" role="tablist" aria-label="第四の猿の動作状態" onMouseLeave={() => setActive(monkeyStates[3])}>
+      {monkeyStates.map((state) => {
+        const selected = active.id === state.id;
+        return <button
+          type="button"
+          role="tab"
+          aria-selected={selected}
+          aria-controls="state-readout"
+          className={selected ? "selected" : undefined}
+          onMouseEnter={() => setActive(state)}
+          onFocus={() => setActive(state)}
+          onClick={() => setActive(state)}
+          key={state.id}
+        >
+          <span className="state-number">{state.number}</span>
+          <span className="state-art" aria-hidden="true">
+            {state.image ? <img src={state.image} alt="" /> : <span className="banana-line-art" />}
+          </span>
+          <strong>{state.ja}</strong>
+        </button>;
+      })}
     </div>
-    <div className="state-readout" role="tabpanel" aria-live="polite"><span className="status-light" /><p>{active.en}</p><strong>{active.note}</strong></div>
+    <div className="state-readout" id="state-readout" role="tabpanel" aria-live="polite"><span className="status-light" /><p>{active.en}</p><strong>{active.note}</strong></div>
   </div>;
 }
 
