@@ -6,7 +6,7 @@ const monkeyStates = [
   { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-line.png" },
   { id: "hear", number: "02", ja: "聞かざる", en: "HEAR NO EVIL", note: "説明要求を受信しない。", image: "/monkey-hear-line.png" },
   { id: "speak", number: "03", ja: "言わざる", en: "SPEAK NO EVIL", note: "弁明を出力しない。", image: "/monkey-speak-line.png" },
-  { id: "eat", number: "04", ja: "食べる", en: "EAT THE BANANA", note: "残された唯一の操作を実行する。", image: null },
+  { id: "eat", number: "04", ja: "食べる", en: "EAT THE BANANA", note: "残された唯一の操作を実行する。", image: "/banana-screenprint.png" },
 ];
 
 export function MonkeyStates() {
@@ -20,7 +20,7 @@ export function MonkeyStates() {
           role="tab"
           aria-selected={selected}
           aria-controls="state-readout"
-          className={selected ? "selected" : undefined}
+          className={[selected ? "selected" : "", state.id === "eat" ? "eat-state" : ""].filter(Boolean).join(" ") || undefined}
           onMouseEnter={() => setActive(state)}
           onFocus={() => setActive(state)}
           onClick={() => setActive(state)}
@@ -28,7 +28,7 @@ export function MonkeyStates() {
         >
           <span className="state-number">{state.number}</span>
           <span className="state-art" aria-hidden="true">
-            {state.image ? <img src={state.image} alt="" /> : <span className="banana-line-art" />}
+            <img className={state.id === "eat" ? "banana-art" : undefined} src={state.image} alt="" />
           </span>
           <strong>{state.ja}</strong>
         </button>;
