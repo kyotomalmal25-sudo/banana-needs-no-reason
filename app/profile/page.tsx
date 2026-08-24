@@ -6,15 +6,15 @@ export default function ProfilePage() {
     <section className="page-intro compact-intro"><div><p className="kicker">Profile / Operating states</p><h1>The Fourth<br />Monkey</h1></div><p className="intro-copy">見ざる。聞かざる。言わざる。<br /><strong>そして、食べる。</strong></p></section>
     <section className="subject-dossier" aria-labelledby="subject-name">
       <div className="subject-index">
-        <p className="kicker">Subject index / room 01</p>
+        <p className="kicker">Subject / specimen 04</p>
         <strong aria-hidden="true">04</strong>
-        <div className="subject-index-meta"><span>SPECIMEN</span><span>CHIMPANZEE</span><span>2026</span></div>
+        <div className="subject-index-meta"><span>PRIMATES</span><span>CHIMPANZEE</span></div>
       </div>
       <div className="subject-record">
-        <div className="subject-summary"><p className="kicker">Subject identification</p><h2 id="subject-name">CHIMPANZEE</h2><p className="short-statement">バナナのために生きる。<br />学ばない、恐れない、縛られない。<br />そして、バナナに対しては一歩も譲らない。</p></div>
-        <div className="subject-data"><dl className="catalog-specs"><div><dt>Role</dt><dd>Banana Phone Developer</dd></div><div><dt>Base</dt><dd>Forest Office / Somewhere</dd></div><div><dt>Method</dt><dd>Eat. Think later.</dd></div><div><dt>Since</dt><dd>2026</dd></div></dl><blockquote>“The Fourth Monkey Eats.”</blockquote></div>
+        <div className="subject-summary"><p className="kicker">Classification</p><h2 id="subject-name">CHIMPANZEE</h2></div>
+        <div className="subject-data"><dl className="catalog-specs"><div><dt>Role</dt><dd>Banana Phone Developer</dd></div><div><dt>Base</dt><dd>Forest Office</dd></div><div><dt>Method</dt><dd>Eat. Think later.</dd></div><div><dt>Diet</dt><dd>Banana</dd></div><div><dt>Reason</dt><dd>Not required.</dd></div></dl></div>
       </div>
     </section>
-    <section className="states-section"><header><p className="kicker">Four operational states</p><h2>人格ではない。動作状態である。</h2></header><MonkeyStates /></section>
+    <section className="states-section states-section-minimal"><header className="states-heading-minimal"><p className="kicker">Four states / operating index</p><span>Hover / tap to observe</span></header><MonkeyStates /></section>
   </SiteShell>;
 }
