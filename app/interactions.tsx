@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 const monkeyStates = [
-  { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-line.png" },
-  { id: "hear", number: "02", ja: "聞かざる", en: "HEAR NO EVIL", note: "説明要求を受信しない。", image: "/monkey-hear-line.png" },
-  { id: "speak", number: "03", ja: "言わざる", en: "SPEAK NO EVIL", note: "弁明を出力しない。", image: "/monkey-speak-line.png" },
+  { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-pop-v1.png", poster: { rail: "POLITICS", top: "CULTURE / HISTORY", major: "2015", mid: "LOOK AWAY", bottom: "BETTER LEFT UNSEEN", mini: "PUBLIC MEMORY / ARCHIVE CLOSED" } },
+  { id: "hear", number: "02", ja: "聞かざる", en: "HEAR NO EVIL", note: "説明要求を受信しない。", image: "/monkey-hear-pop-v2.png", poster: { rail: "CULTURE", top: "POLITICS / HISTORY", major: "STATIC", mid: "TURN IT DOWN", bottom: "BETTER LEFT UNHEARD", mini: "PUBLIC NOISE / IGNORE THE RUMOR" } },
+  { id: "speak", number: "03", ja: "言わざる", en: "SPEAK NO EVIL", note: "弁明を出力しない。", image: "/monkey-speak-pop-v2.png", poster: { rail: "HISTORY", top: "POLITICS / CULTURE", major: "SILENCE", mid: "NO COMMENT", bottom: "BETTER LEFT UNSAID", mini: "OFF THE RECORD / WORDS MATTER" } },
   { id: "eat", number: "04", ja: "食べる", en: "EAT THE BANANA", note: "残された唯一の操作を実行する。", image: "/banana-screenprint.png" },
 ];
 
@@ -27,11 +27,21 @@ export function MonkeyStates() {
           key={state.id}
         >
           <span className="state-number">{state.number}</span>
-          <span className="state-art" aria-hidden="true">
+          <span className={["state-art", state.id !== "eat" ? "monkey-state-art" : ""].filter(Boolean).join(" ")} aria-hidden="true">
             {state.id === "eat" ? <span className="banana-hover-art">
               <img className="banana-art banana-intact" src={state.image} alt="" />
               <img className="banana-art banana-peel" src="/banana-peel-screenprint.png" alt="" />
-            </span> : <img src={state.image} alt="" />}
+            </span> : <>
+              {state.poster && <span className="state-type-collage">
+                <span className="type-rail">{state.poster.rail}</span>
+                <span className="type-top">{state.poster.top}</span>
+                <span className={`type-major type-major-${state.id}`}>{state.poster.major}</span>
+                <span className="type-mid">{state.poster.mid}</span>
+                <span className="type-bottom">{state.poster.bottom}</span>
+                <span className="type-mini">{state.poster.mini}</span>
+              </span>}
+              <img className="monkey-pop-art" src={state.image} alt="" />
+            </>}
           </span>
           <strong>{state.ja}</strong>
         </button>;
