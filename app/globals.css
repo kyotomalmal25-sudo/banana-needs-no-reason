@@ -72,7 +72,9 @@ main { min-height:100vh; overflow:hidden; }
 .subject-index .kicker { color:var(--muted); }
 .subject-index>strong { align-self:center; font-family:var(--font-geist-mono),monospace; font-size:clamp(126px,15vw,220px); font-weight:760; letter-spacing:-.13em; line-height:.72; margin-left:-.09em; }
 .subject-index-meta { border-top:1px solid var(--line); display:flex; font-family:var(--font-geist-mono),monospace; font-size:8px; justify-content:space-between; padding-top:12px; }
-.subject-record { align-items:center; background:var(--white); display:grid; gap:clamp(56px,9vw,144px); grid-template-columns:minmax(250px,1fr) minmax(280px,.85fr); padding:clamp(52px,7vw,96px); }
+.subject-record { align-items:center; background:var(--white); display:grid; gap:clamp(56px,9vw,144px); grid-template-columns:minmax(250px,1fr) minmax(280px,.85fr); overflow:hidden; padding:clamp(52px,7vw,96px); position:relative; }
+.subject-record::before { background:url("/chimpanzee-profile.png") 52% 30%/cover no-repeat; content:""; filter:grayscale(1) contrast(1.65); height:100%; mix-blend-mode:multiply; opacity:.055; pointer-events:none; position:absolute; right:0; top:0; width:48%; }
+.subject-record>* { position:relative; z-index:1; }
 .subject-summary h2 { font-size:clamp(44px,5vw,72px); font-weight:540; letter-spacing:-.045em; line-height:.9; margin:18px 0 0; }
 .short-statement { font-size:16px; font-weight:680; line-height:2; }
 .catalog-specs { border-top:1px solid var(--ink); margin-top:42px; } .subject-data .catalog-specs { margin-top:0; } .catalog-specs div { border-bottom:1px solid var(--line); display:grid; gap:14px; grid-template-columns:84px 1fr; padding:15px 0; }
@@ -171,7 +173,7 @@ main { min-height:100vh; overflow:hidden; }
   .operating-grid { gap:42px; grid-template-columns:1fr; } .operating-note { transform:rotate(-.5deg); }
   .manual-stamp { bottom:24px; height:72px; right:26px; width:72px; }
   .page-intro { align-items:start; min-height:360px; } .compact-intro { min-height:320px; } .intro-copy,.manual-summary { border-left:0; border-top:1px solid var(--ink); padding:22px 0 0; }
-  .subject-index { min-height:220px; padding:28px 24px; } .subject-index>strong { align-self:center; font-size:142px; justify-self:end; } .subject-record { gap:42px; grid-template-columns:1fr; padding:52px 24px; } .subject-summary h2 { font-size:clamp(42px,13vw,64px); }
+  .subject-index { min-height:220px; padding:28px 24px; } .subject-index>strong { align-self:center; font-size:142px; justify-self:end; } .subject-record { gap:42px; grid-template-columns:1fr; padding:52px 24px; } .subject-record::before { background-position:50% 24%; opacity:.04; width:100%; } .subject-summary h2 { font-size:clamp(42px,13vw,64px); }
   .states-heading-minimal { align-items:start; flex-direction:column; gap:10px; }
   .state-buttons { grid-template-columns:1fr 1fr; } .state-buttons button { min-height:220px; } .state-art { height:82px; } .state-art img { height:76px; width:76px; } .banana-line-art { transform:rotate(-13deg) scale(.78); }
   .manual-sheet { margin:18px; } .manual-sheet>header { grid-template-columns:1fr; } .manual-sheet>header div { border-bottom:1px solid var(--line); border-right:0; }
