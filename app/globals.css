@@ -95,6 +95,11 @@ main { min-height:100vh; overflow:hidden; }
 .state-buttons button.selected .state-art { opacity:1; transform:translateY(4px) scale(1); }
 .state-art img { height:96px; object-fit:contain; width:96px; }
 .state-art img.banana-art { filter:contrast(1.05) saturate(1.12); height:auto; transform:rotate(-5deg); width:min(122px,112%); }
+.banana-hover-art { align-items:center; display:grid; height:100%; justify-items:center; width:100%; }
+.banana-hover-art img { grid-area:1/1; transition:opacity 170ms ease,transform 220ms cubic-bezier(.2,.75,.2,1); }
+.banana-hover-art .banana-peel { opacity:0; transform:rotate(2deg) scale(.78); width:min(132px,118%); }
+.banana-hover-art:hover .banana-intact,.eat-state:focus-visible .banana-intact { opacity:0; transform:rotate(-8deg) scale(.92); }
+.banana-hover-art:hover .banana-peel,.eat-state:focus-visible .banana-peel { opacity:1; transform:rotate(2deg) scale(1); }
 .state-readout { align-content:center; background:var(--ink); color:var(--paper); display:grid; gap:14px; padding:38px; } .state-readout p { color:var(--yellow); font-family:var(--font-geist-mono),monospace; font-size:12px; } .state-readout strong { font-size:15px; line-height:1.7; }
 
 .manual-intro { grid-template-columns:1fr auto; } .manual-summary { border-left:1px solid var(--ink); display:grid; font-family:var(--font-geist-mono),monospace; font-size:9px; gap:13px; padding:20px 0 20px 28px; }

@@ -28,7 +28,10 @@ export function MonkeyStates() {
         >
           <span className="state-number">{state.number}</span>
           <span className="state-art" aria-hidden="true">
-            <img className={state.id === "eat" ? "banana-art" : undefined} src={state.image} alt="" />
+            {state.id === "eat" ? <span className="banana-hover-art">
+              <img className="banana-art banana-intact" src={state.image} alt="" />
+              <img className="banana-art banana-peel" src="/banana-peel-screenprint.png" alt="" />
+            </span> : <img src={state.image} alt="" />}
           </span>
           <strong>{state.ja}</strong>
         </button>;
