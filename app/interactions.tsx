@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 const monkeyStates = [
-  { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-pop-v1.png", poster: { rail: "POLITICS", top: "CULTURE / HISTORY", major: "2015", mid: "LOOK AWAY", bottom: "BETTER LEFT UNSEEN", mini: "PUBLIC MEMORY / ARCHIVE CLOSED" } },
-  { id: "hear", number: "02", ja: "聞かざる", en: "HEAR NO EVIL", note: "説明要求を受信しない。", image: "/monkey-hear-pop-v2.png", poster: { rail: "CULTURE", top: "POLITICS / HISTORY", major: "STATIC", mid: "TURN IT DOWN", bottom: "BETTER LEFT UNHEARD", mini: "PUBLIC NOISE / IGNORE THE RUMOR" } },
-  { id: "speak", number: "03", ja: "言わざる", en: "SPEAK NO EVIL", note: "弁明を出力しない。", image: "/monkey-speak-pop-v2.png", poster: { rail: "HISTORY", top: "POLITICS / CULTURE", major: "SILENCE", mid: "NO COMMENT", bottom: "BETTER LEFT UNSAID", mini: "OFF THE RECORD / WORDS MATTER" } },
+  { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-pop-v1.png", poster: { rail: "UNSEEN", top: "HISTORY / CULTURE", major: "POLITICS", mid: "LOOK AWAY", bottom: "BETTER LEFT UNSEEN", mini: "PUBLIC MEMORY / ARCHIVE CLOSED" } },
+  { id: "hear", number: "02", ja: "聞かざる", en: "HEAR NO EVIL", note: "説明要求を受信しない。", image: "/monkey-hear-pop-v2.png", poster: { rail: "UNHEARD", top: "POLITICS / CULTURE", major: "HISTORY", mid: "TURN IT DOWN", bottom: "BETTER LEFT UNHEARD", mini: "PUBLIC NOISE / IGNORE THE RUMOR" } },
+  { id: "speak", number: "03", ja: "言わざる", en: "SPEAK NO EVIL", note: "弁明を出力しない。", image: "/monkey-speak-pop-v2.png", poster: { rail: "UNSAID", top: "POLITICS / HISTORY", major: "CULTURE", mid: "NO COMMENT", bottom: "BETTER LEFT UNSAID", mini: "OFF THE RECORD / WORDS MATTER" } },
   { id: "eat", number: "04", ja: "食べる", en: "EAT THE BANANA", note: "残された唯一の操作を実行する。", image: "/banana-screenprint.png" },
 ];
 
@@ -47,7 +47,7 @@ export function MonkeyStates() {
         </button>;
       })}
     </div>
-    <div className="state-readout" id="state-readout" role="tabpanel" aria-live="polite"><span className="status-light" /><p>{active.en}</p><strong>{active.note}</strong></div>
+    <div className={["state-readout", active.id !== "eat" ? "monkey-readout" : ""].filter(Boolean).join(" ")} id="state-readout" role="tabpanel" aria-live="polite"><span className="status-light" /><p>{active.en}</p><strong>{active.note}</strong></div>
   </div>;
 }
 
