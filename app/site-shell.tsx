@@ -11,7 +11,10 @@ export function SiteShell({ children, current, plate }: { children: ReactNode; c
   return (
     <main>
       <header className="site-header">
-        <a className="site-mark" href="/" aria-label="トップへ"><span className="mark-dot" /><span>DABNR?</span></a>
+        <a className="site-mark" href="/" aria-label="DBNR / トップへ">
+          <span className="mark-emblem" aria-hidden="true"><img src="/chimpanzee-profile.png" alt="" /></span>
+          <span className="mark-word">DBNR</span>
+        </a>
         <nav aria-label="主要ページ">
           {links.map((link) => <a href={link.href} key={link.id} className={current === link.id ? "active" : undefined} aria-current={current === link.id ? "page" : undefined}>{link.label}</a>)}
         </nav>
