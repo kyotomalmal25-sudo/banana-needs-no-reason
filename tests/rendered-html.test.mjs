@@ -18,6 +18,10 @@ test("server-renders the exhibition home", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /<title>Does a Banana Need a Reason\?<\/title>/i);
+  assert.match(
+    html,
+    /<meta name="google-site-verification" content="WtmBq6xK9s63O5KMQPDL45AZ1nWgr3TP4rAk8PxqBJg"\s*\/?>/i,
+  );
   assert.match(html, /バナナを食べるのに理由がいるのか。/);
   assert.match(html, /The Fourth Monkey/);
   assert.match(html, /Banana Protocol/);

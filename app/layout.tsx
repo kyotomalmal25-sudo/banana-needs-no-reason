@@ -20,6 +20,9 @@ const notoSansJp = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: "Does a Banana Need a Reason?",
   description: "バナナを食べるのに理由がいるのか。第四の猿、標準皮むき手順、そしてバナナ電話の展示。",
+  verification: {
+    google: "WtmBq6xK9s63O5KMQPDL45AZ1nWgr3TP4rAk8PxqBJg",
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
