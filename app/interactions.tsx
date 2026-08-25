@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const monkeyStates = [
   { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-pop-v1.png", poster: { rail: "UNSEEN", top: "HISTORY / CULTURE", major: "POLITICS", mid: "LOOK AWAY", bottom: "BETTER LEFT UNSEEN", mini: "PUBLIC MEMORY / ARCHIVE CLOSED" } },
@@ -59,6 +59,82 @@ const protocolSteps = [
   { n: "05", ja: "摂取", en: "CONSUME", note: "理由の提出前に摂取を開始する。" },
   { n: "06", ja: "沈黙", en: "SILENCE", note: "完了後、成果を過剰に語らない。" },
 ];
+
+const explodedLayers = [
+  { id: "01", name: "OUTER PEEL / LEFT", clip: "inset(0 72% 0 0)", x: -170, y: 44, rotate: -11 },
+  { id: "02", name: "FLESH CORE / A", clip: "inset(0 48% 0 24%)", x: -58, y: -38, rotate: -3 },
+  { id: "03", name: "FLESH CORE / B", clip: "inset(0 24% 0 48%)", x: 58, y: -64, rotate: 4 },
+  { id: "04", name: "OUTER PEEL / RIGHT", clip: "inset(0 0 0 72%)", x: 176, y: 36, rotate: 12 },
+];
+
+export function BananaExplodedScroll() {
+  const trackRef = useRef<HTMLElement>(null);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const track = trackRef.current;
+      if (!track) return;
+      const rect = track.getBoundingClientRect();
+      const distance = Math.max(1, rect.height - window.innerHeight);
+      setProgress(Math.min(1, Math.max(0, -rect.top / distance)));
+    };
+    const requestUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  const separation = Math.min(1, Math.max(0, (progress - 0.08) / 0.62));
+  const reveal = Math.min(1, progress * 9);
+  const activeLayer = Math.min(3, Math.floor(separation * 4));
+  const percent = Math.round(progress * 100).toString().padStart(2, "0");
+
+  return <section className="explode-track" ref={trackRef} aria-label="バナナ縦断分解図">
+    <div className="explode-stage">
+      <div className="explode-heading">
+        <p className="kicker">Scroll controlled longitudinal study / BP-X1</p>
+        <h2>Peel<br />Anatomy</h2>
+        <p>スクロールして、一本のバナナを四つの技術層へ分解する。</p>
+      </div>
+
+      <div className="explode-visual" aria-hidden="true">
+        <div className="explode-axis explode-axis-x" />
+        <div className="explode-axis explode-axis-y" />
+        <img className="explode-banana-base" src="/banana-screenprint.png" alt="" style={{ opacity: 1 - reveal }} />
+        {explodedLayers.map((layer, layerIndex) => <img
+          className="explode-banana-layer"
+          src="/banana-screenprint.png"
+          alt=""
+          key={layer.id}
+          style={{
+            clipPath: layer.clip,
+            opacity: reveal,
+            transform: `translate3d(${layer.x * separation}px, ${layer.y * separation}px, 0) rotate(${layer.rotate * separation}deg)`,
+          }}
+        />)}
+        <span className="explode-origin">B-01</span>
+      </div>
+
+      <div className="explode-readout" aria-live="polite">
+        <div className="explode-progress"><span style={{ width: `${percent}%` }} /></div>
+        <div className="explode-percent">{percent}<small>%</small></div>
+        <p>{progress < .08 ? "ASSEMBLED SPECIMEN" : progress > .82 ? "SEPARATION COMPLETE" : explodedLayers[activeLayer].name}</p>
+        <strong>{progress < .08 ? "未分解" : progress > .82 ? "分解完了" : `層 ${explodedLayers[activeLayer].id} を展開中`}</strong>
+        <span>SCROLL ↓</span>
+      </div>
+    </div>
+  </section>;
+}
 
 export function ProtocolConsole() {
   const [index, setIndex] = useState(0);
