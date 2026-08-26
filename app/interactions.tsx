@@ -61,10 +61,10 @@ export function Banana3D() {
   const modeRef = useRef(0);
   const [mode, setMode] = useState(0);
   const liquidModes = [
-    { n: "01", label: "DRIFT", value: 0 },
-    { n: "02", label: "CURVE", value: 1 },
-    { n: "03", label: "BANANA", value: 2 },
-    { n: "04", label: "DISSOLVE", value: 3 },
+  { n: "01", label: "よく観る", value: 0 },
+  { n: "02", label: "触る", value: 1 },
+  { n: "03", label: "匂いを嗅ぐ", value: 2 },
+  { n: "04", label: "皮を剥く", value: 3 },
   ];
 
   useEffect(() => { modeRef.current = mode; }, [mode]);
@@ -147,8 +147,8 @@ export function Banana3D() {
         float phase = mod(t, 10.0);
         float reveal = smoothstep(2.1, 4.4, phase) * (1.0 - smoothstep(6.0, 8.8, phase));
         if (u_mode > 0.5 && u_mode < 1.5) reveal = 0.48;
-        if (u_mode > 1.5 && u_mode < 2.5) reveal = 1.0;
-        if (u_mode > 2.5) reveal = 0.12 + 0.12 * sin(t * 1.7);
+        if (u_mode > 1.5 && u_mode < 2.5) reveal = 0.04 + 0.035 * sin(t * 1.13);
+        if (u_mode > 2.5) reveal = 0.86 + 0.08 * sin(t * 1.7);
 
         float liquid = liquidField(p, t);
         float banana = bananaField(p);
@@ -161,26 +161,31 @@ export function Banana3D() {
         float texture = fbm(p * 5.5 - vec2(t * 0.05, t * 0.09));
         float sweep = 0.5 + 0.5 * sin(p.x * 3.4 - p.y * 2.1 + t * 0.72);
         float clarity = smoothstep(0.08, 0.92, fbm(p * 2.4 + vec2(t * 0.025, -t * 0.03)));
-        vec3 amber = vec3(0.86, 0.56, 0.0);
-        vec3 gold = vec3(0.98, 0.74, 0.04);
-        vec3 lemon = vec3(1.0, 0.91, 0.31);
-        vec3 glassYellow = vec3(1.0, 0.95, 0.67);
+        vec3 amber = vec3(0.78, 0.61, 0.18);
+        vec3 gold = vec3(1.0, 0.80, 0.20);
+        vec3 lemon = vec3(1.0, 0.94, 0.48);
+        vec3 glassYellow = vec3(1.0, 0.98, 0.82);
         vec3 fluid = mix(amber, gold, smoothstep(0.12, 0.86, texture));
         fluid = mix(fluid, lemon, smoothstep(0.58, 1.0, sweep) * 0.72);
         fluid = mix(fluid, glassYellow, clarity * 0.34);
-        fluid *= 0.94 + 0.12 * reveal;
+        fluid *= 0.97 + 0.09 * reveal;
 
         float paperNoise = (noise(gl_FragCoord.xy * 0.34) - 0.5) * 0.018;
         vec3 background = vec3(0.969, 0.957, 0.914) + paperNoise;
         background += vec3(0.12, 0.075, 0.0) * aura * 0.05;
-        float transmission = 0.20 + texture * 0.18 + reveal * 0.07;
+        float transmission = 0.10 + texture * 0.07 + reveal * 0.035;
         vec3 transparentFluid = mix(background, fluid, transmission);
         transparentFluid += vec3(1.0, 0.94, 0.48) * smoothstep(0.68, 1.0, sweep) * 0.045;
+        float highlightBand = exp(-pow((p.x * 0.72 + p.y * 0.94 + sin(t * 0.3) * 0.12) * 4.5, 2.0));
+        transparentFluid += vec3(1.0, 0.99, 0.78) * highlightBand * (0.045 + reveal * 0.035);
         vec3 color = mix(background, transparentFluid, body);
-        vec3 outline = vec3(0.11, 0.09, 0.035);
-        color = mix(color, outline, edge * (0.11 + reveal * 0.14));
+        vec3 outline = vec3(0.44, 0.34, 0.12);
+        color = mix(color, outline, edge * (0.045 + reveal * 0.06));
+        float yellowRim = smoothstep(0.18, 0.84, edge);
+        vec3 warmRim = mix(vec3(1.0, 0.72, 0.08), vec3(1.0, 0.96, 0.58), 0.5 + 0.5 * sin(p.x * 4.0 - p.y * 2.3 + t * 0.55));
+        color = mix(color, warmRim, yellowRim * 0.18);
         float glint = smoothstep(0.76, 1.0, noise(p * 9.0 + t * 0.2)) * edge;
-        color += vec3(1.0, 0.99, 0.86) * glint * 0.58;
+        color += vec3(1.0, 0.98, 0.72) * glint * 0.52;
         float vignette = 1.0 - smoothstep(0.45, 1.18, length(p));
         color *= 0.965 + 0.035 * vignette;
         gl_FragColor = vec4(color, 1.0);
@@ -271,7 +276,7 @@ export function Banana3D() {
         <div className="banana-liquid-axis" aria-hidden="true"><span /><span /></div>
       </div>
       <aside className="banana-menu banana-liquid-menu" aria-label="液体バナナの形状メニュー">
-        <div className="banana-menu-readout"><span>FORM OBSERVATION / {liquidModes[mode].n}</span><p>LIQUID BANANA TRACE</p><strong>{liquidModes[mode].label}</strong></div>
+        <div className="banana-menu-readout"><span>FORM OBSERVATION / {liquidModes[mode].n}</span><p>LIQUID BANANA TRACE</p><strong>皮むき手順</strong></div>
         <div className="banana-menu-controls" role="group" aria-label="流体の状態を選択">
           {liquidModes.map((item) => <button type="button" key={item.n} onClick={() => setMode(item.value)} className={mode === item.value ? "active" : undefined}><span>{item.n}</span><strong>{item.label}</strong></button>)}
         </div>
