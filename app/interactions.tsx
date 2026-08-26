@@ -141,7 +141,8 @@ export function Banana3D() {
       }
       void main() {
         vec2 p = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / u_resolution.y;
-        p.x += 0.15;
+        p.x -= 0.08;
+        p *= 0.90;
         float t = u_time;
         float phase = mod(t, 10.0);
         float reveal = smoothstep(2.1, 4.4, phase) * (1.0 - smoothstep(6.0, 8.8, phase));
@@ -159,21 +160,29 @@ export function Banana3D() {
 
         float texture = fbm(p * 5.5 - vec2(t * 0.05, t * 0.09));
         float sweep = 0.5 + 0.5 * sin(p.x * 3.4 - p.y * 2.1 + t * 0.72);
-        vec3 deep = vec3(0.31, 0.17, 0.005);
-        vec3 gold = vec3(0.94, 0.60, 0.0);
-        vec3 lemon = vec3(1.0, 0.88, 0.20);
-        vec3 fluid = mix(deep, gold, smoothstep(0.12, 0.86, texture));
-        fluid = mix(fluid, lemon, smoothstep(0.62, 1.0, sweep) * 0.72);
-        fluid *= 0.74 + 0.42 * reveal;
+        float clarity = smoothstep(0.08, 0.92, fbm(p * 2.4 + vec2(t * 0.025, -t * 0.03)));
+        vec3 amber = vec3(0.86, 0.56, 0.0);
+        vec3 gold = vec3(0.98, 0.74, 0.04);
+        vec3 lemon = vec3(1.0, 0.91, 0.31);
+        vec3 glassYellow = vec3(1.0, 0.95, 0.67);
+        vec3 fluid = mix(amber, gold, smoothstep(0.12, 0.86, texture));
+        fluid = mix(fluid, lemon, smoothstep(0.58, 1.0, sweep) * 0.72);
+        fluid = mix(fluid, glassYellow, clarity * 0.34);
+        fluid *= 0.94 + 0.12 * reveal;
 
-        vec3 background = vec3(0.008, 0.007, 0.001);
-        background += vec3(0.055, 0.031, 0.0) * aura * 0.42;
-        vec3 color = mix(background, fluid, body);
-        color += vec3(1.0, 0.68, 0.08) * edge * (0.28 + reveal * 0.52);
+        float paperNoise = (noise(gl_FragCoord.xy * 0.34) - 0.5) * 0.018;
+        vec3 background = vec3(0.969, 0.957, 0.914) + paperNoise;
+        background += vec3(0.12, 0.075, 0.0) * aura * 0.05;
+        float transmission = 0.20 + texture * 0.18 + reveal * 0.07;
+        vec3 transparentFluid = mix(background, fluid, transmission);
+        transparentFluid += vec3(1.0, 0.94, 0.48) * smoothstep(0.68, 1.0, sweep) * 0.045;
+        vec3 color = mix(background, transparentFluid, body);
+        vec3 outline = vec3(0.11, 0.09, 0.035);
+        color = mix(color, outline, edge * (0.11 + reveal * 0.14));
         float glint = smoothstep(0.76, 1.0, noise(p * 9.0 + t * 0.2)) * edge;
-        color += vec3(1.0, 0.92, 0.42) * glint * 0.65;
+        color += vec3(1.0, 0.99, 0.86) * glint * 0.58;
         float vignette = 1.0 - smoothstep(0.45, 1.18, length(p));
-        color *= 0.76 + 0.24 * vignette;
+        color *= 0.965 + 0.035 * vignette;
         gl_FragColor = vec4(color, 1.0);
       }
     `;
@@ -253,14 +262,20 @@ export function Banana3D() {
       <div className="banana-3d-stage banana-liquid-stage" onPointerMove={handlePointerMove} onPointerLeave={() => { pointerRef.current = { x: 0, y: 0 }; }} aria-label="黄色い液体が一瞬バナナの形になる抽象アニメーション">
         <canvas ref={canvasRef} className="banana-liquid-canvas" aria-hidden="true" />
         <div className="banana-liquid-meta" aria-hidden="true"><span>YELLOW MATTER / 01</span><span>FORM IS TEMPORARY</span></div>
+        <div className="banana-liquid-intro">
+          <span>OBSERVATION / BP-06</span>
+          <h2>Signals from<br />the Yellow Matter</h2>
+          <p>漂う液体は形を変えながら、ほんの一瞬だけバナナとして現れる。</p>
+          <button type="button" onClick={() => setMode(2)}><span>バナナにしよう</span><span aria-hidden="true">→</span></button>
+        </div>
         <div className="banana-liquid-axis" aria-hidden="true"><span /><span /></div>
       </div>
       <aside className="banana-menu banana-liquid-menu" aria-label="液体バナナの形状メニュー">
-        <div className="banana-menu-readout"><span>SUBSTANCE / 01</span><p>LIQUID BANANA TRACE</p><strong>黄色い流体は漂い、曲がり、一瞬だけバナナとして認識される。</strong></div>
+        <div className="banana-menu-readout"><span>FORM OBSERVATION / {liquidModes[mode].n}</span><p>LIQUID BANANA TRACE</p><strong>{liquidModes[mode].label}</strong></div>
         <div className="banana-menu-controls" role="group" aria-label="流体の状態を選択">
           {liquidModes.map((item) => <button type="button" key={item.n} onClick={() => setMode(item.value)} className={mode === item.value ? "active" : undefined}><span>{item.n}</span><strong>{item.label}</strong></button>)}
         </div>
-        <button className="banana-menu-action" type="button" onClick={() => setMode((value) => (value + 1) % liquidModes.length)}><span>次の形状</span><span aria-hidden="true">→</span></button>
+        <div className="banana-liquid-signal" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
       </aside>
     </div>
     <p className="banana-3d-hint">MOVE POINTER / WAIT FOR THE BANANA / LOOP 10 SEC</p>
