@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 
 const monkeyStates = [
   { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-pop-v1.png", poster: { rail: "UNSEEN", top: "HISTORY / CULTURE", major: "POLITICS", mid: "LOOK AWAY", bottom: "BETTER LEFT UNSEEN", mini: "PUBLIC MEMORY / ARCHIVE CLOSED" } },
@@ -51,28 +51,220 @@ export function MonkeyStates() {
   </div>;
 }
 
-const protocolSteps = [
-  { n: "01", ja: "観察", en: "OBSERVE", note: "対象がバナナであることを確認する。" },
-  { n: "02", ja: "茎部確認", en: "LOCATE", note: "茎部を発見する。議論は開始しない。" },
-  { n: "03", ja: "把持", en: "GRIP", note: "利き手で保持。非利き手は沈黙を担当。" },
-  { n: "04", ja: "皮むき", en: "PEEL", note: "外皮を三方向へ展開する。" },
-  { n: "05", ja: "摂取", en: "CONSUME", note: "理由の提出前に摂取を開始する。" },
-  { n: "06", ja: "沈黙", en: "SILENCE", note: "完了後、成果を過剰に語らない。" },
-];
-
 export function ProtocolConsole() {
-  const [index, setIndex] = useState(0);
-  const step = protocolSteps[index];
-  return <div className="protocol-console">
-    <div className={`banana-diagram stage-${index + 1}`} aria-label={`手順 ${step.n}: ${step.ja}`}>
-      <div className="measure">218 mm</div><div className="banana-core" /><div className="peel peel-one" /><div className="peel peel-two" /><div className="peel peel-three" />
-      <span className="diagram-point point-a" /><span className="diagram-point point-b" /><div className="diagram-label">B-01 / CAVENDISH TYPE</div>
+  return <div className="protocol-console protocol-plate" aria-label="空の白い四角形" />;
+}
+
+export function Banana3D() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pointerRef = useRef({ x: 0, y: 0 });
+  const modeRef = useRef(0);
+  const [mode, setMode] = useState(0);
+  const liquidModes = [
+    { n: "01", label: "DRIFT", value: 0 },
+    { n: "02", label: "CURVE", value: 1 },
+    { n: "03", label: "BANANA", value: 2 },
+    { n: "04", label: "DISSOLVE", value: 3 },
+  ];
+
+  useEffect(() => { modeRef.current = mode; }, [mode]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const gl = canvas.getContext("webgl", { antialias: false, alpha: false });
+    if (!gl) return;
+
+    const vertexSource = `
+      attribute vec2 a_position;
+      varying vec2 v_uv;
+      void main() {
+        v_uv = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+    const fragmentSource = `
+      precision highp float;
+      varying vec2 v_uv;
+      uniform vec2 u_resolution;
+      uniform vec2 u_pointer;
+      uniform float u_time;
+      uniform float u_mode;
+
+      float hash(vec2 p) {
+        p = fract(p * vec2(123.34, 456.21));
+        p += dot(p, p + 45.32);
+        return fract(p.x * p.y);
+      }
+      float noise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0)), f.x), f.y);
+      }
+      float fbm(vec2 p) {
+        float value = 0.0;
+        float amplitude = 0.5;
+        for (int i = 0; i < 5; i++) {
+          value += amplitude * noise(p);
+          p = p * 2.03 + 17.17;
+          amplitude *= 0.5;
+        }
+        return value;
+      }
+      float smin(float a, float b, float k) {
+        float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+        return mix(b, a, h) - k * h * (1.0 - h);
+      }
+      mat2 rotate2d(float a) {
+        float s = sin(a), c = cos(a);
+        return mat2(c, -s, s, c);
+      }
+      float liquidField(vec2 p, float t) {
+        vec2 drift = u_pointer * 0.11;
+        vec2 a = vec2(-0.24 + sin(t * 0.61) * 0.17, 0.03 + cos(t * 0.43) * 0.14) + drift;
+        vec2 b = vec2(0.15 + cos(t * 0.37) * 0.19, -0.03 + sin(t * 0.53) * 0.16) + drift * 0.4;
+        vec2 c = vec2(0.02 + sin(t * 0.29 + 2.0) * 0.25, 0.18 + cos(t * 0.47) * 0.09) - drift * 0.3;
+        float d = length((p - a) * vec2(0.88, 1.12)) - 0.34;
+        d = smin(d, length((p - b) * vec2(1.15, 0.87)) - 0.31, 0.30);
+        d = smin(d, length((p - c) * vec2(0.92, 1.18)) - 0.27, 0.26);
+        return d;
+      }
+      float bananaField(vec2 p) {
+        p = rotate2d(-0.18) * (p - vec2(-0.04, -0.01));
+        p *= vec2(0.93, 1.07);
+        float outer = length(p - vec2(0.0, -0.05)) - 0.67;
+        float inner = length(p - vec2(0.03, 0.28)) - 0.57;
+        float crescent = max(outer, -inner);
+        float taper = abs(p.x) - 0.70 + smoothstep(-0.42, 0.32, p.y) * 0.10;
+        return max(crescent, taper);
+      }
+      void main() {
+        vec2 p = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / u_resolution.y;
+        p.x += 0.15;
+        float t = u_time;
+        float phase = mod(t, 10.0);
+        float reveal = smoothstep(2.1, 4.4, phase) * (1.0 - smoothstep(6.0, 8.8, phase));
+        if (u_mode > 0.5 && u_mode < 1.5) reveal = 0.48;
+        if (u_mode > 1.5 && u_mode < 2.5) reveal = 1.0;
+        if (u_mode > 2.5) reveal = 0.12 + 0.12 * sin(t * 1.7);
+
+        float liquid = liquidField(p, t);
+        float banana = bananaField(p);
+        float turbulence = (fbm(p * 3.2 + vec2(t * 0.08, -t * 0.05)) - 0.5) * mix(0.115, 0.038, reveal);
+        float d = mix(liquid, banana, reveal) + turbulence;
+        float body = smoothstep(0.035, -0.028, d);
+        float edge = exp(-abs(d) * 23.0);
+        float aura = exp(-max(abs(d) - 0.01, 0.0) * 7.0);
+
+        float texture = fbm(p * 5.5 - vec2(t * 0.05, t * 0.09));
+        float sweep = 0.5 + 0.5 * sin(p.x * 3.4 - p.y * 2.1 + t * 0.72);
+        vec3 deep = vec3(0.31, 0.17, 0.005);
+        vec3 gold = vec3(0.94, 0.60, 0.0);
+        vec3 lemon = vec3(1.0, 0.88, 0.20);
+        vec3 fluid = mix(deep, gold, smoothstep(0.12, 0.86, texture));
+        fluid = mix(fluid, lemon, smoothstep(0.62, 1.0, sweep) * 0.72);
+        fluid *= 0.74 + 0.42 * reveal;
+
+        vec3 background = vec3(0.008, 0.007, 0.001);
+        background += vec3(0.055, 0.031, 0.0) * aura * 0.42;
+        vec3 color = mix(background, fluid, body);
+        color += vec3(1.0, 0.68, 0.08) * edge * (0.28 + reveal * 0.52);
+        float glint = smoothstep(0.76, 1.0, noise(p * 9.0 + t * 0.2)) * edge;
+        color += vec3(1.0, 0.92, 0.42) * glint * 0.65;
+        float vignette = 1.0 - smoothstep(0.45, 1.18, length(p));
+        color *= 0.76 + 0.24 * vignette;
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    const compile = (type: number, source: string) => {
+      const shader = gl.createShader(type);
+      if (!shader) return null;
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    };
+    const vertex = compile(gl.VERTEX_SHADER, vertexSource);
+    const fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
+    if (!vertex || !fragment) return;
+    const program = gl.createProgram();
+    if (!program) return;
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, fragment);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    gl.useProgram(program);
+
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+    const position = gl.getAttribLocation(program, "a_position");
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+    const resolution = gl.getUniformLocation(program, "u_resolution");
+    const pointer = gl.getUniformLocation(program, "u_pointer");
+    const time = gl.getUniformLocation(program, "u_time");
+    const modeUniform = gl.getUniformLocation(program, "u_mode");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+
+    const draw = (now: number) => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
+      const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+      gl.uniform2f(resolution, width, height);
+      gl.uniform2f(pointer, pointerRef.current.x, pointerRef.current.y);
+      gl.uniform1f(time, reduceMotion ? 4.8 : now * 0.001);
+      gl.uniform1f(modeUniform, modeRef.current);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      frame = requestAnimationFrame(draw);
+    };
+    frame = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(frame);
+      gl.deleteBuffer(buffer);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertex);
+      gl.deleteShader(fragment);
+    };
+  }, []);
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    pointerRef.current = {
+      x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      y: -(((event.clientY - rect.top) / rect.height) * 2 - 1),
+    };
+  };
+
+  return <section className="banana-3d-section banana-liquid-section">
+    <div className="banana-3d-layout">
+      <div className="banana-3d-stage banana-liquid-stage" onPointerMove={handlePointerMove} onPointerLeave={() => { pointerRef.current = { x: 0, y: 0 }; }} aria-label="黄色い液体が一瞬バナナの形になる抽象アニメーション">
+        <canvas ref={canvasRef} className="banana-liquid-canvas" aria-hidden="true" />
+        <div className="banana-liquid-meta" aria-hidden="true"><span>YELLOW MATTER / 01</span><span>FORM IS TEMPORARY</span></div>
+        <div className="banana-liquid-axis" aria-hidden="true"><span /><span /></div>
+      </div>
+      <aside className="banana-menu banana-liquid-menu" aria-label="液体バナナの形状メニュー">
+        <div className="banana-menu-readout"><span>SUBSTANCE / 01</span><p>LIQUID BANANA TRACE</p><strong>黄色い流体は漂い、曲がり、一瞬だけバナナとして認識される。</strong></div>
+        <div className="banana-menu-controls" role="group" aria-label="流体の状態を選択">
+          {liquidModes.map((item) => <button type="button" key={item.n} onClick={() => setMode(item.value)} className={mode === item.value ? "active" : undefined}><span>{item.n}</span><strong>{item.label}</strong></button>)}
+        </div>
+        <button className="banana-menu-action" type="button" onClick={() => setMode((value) => (value + 1) % liquidModes.length)}><span>次の形状</span><span aria-hidden="true">→</span></button>
+      </aside>
     </div>
-    <div className="protocol-panel"><div className="step-readout" aria-live="polite"><span>{step.n} / 06</span><p>{step.en}</p><h2>{step.ja}</h2><strong>{step.note}</strong></div>
-      <div className="step-controls" role="group" aria-label="手順を選択">{protocolSteps.map((item, itemIndex) => <button type="button" className={index === itemIndex ? "active" : undefined} onClick={() => setIndex(itemIndex)} aria-label={`${item.n} ${item.ja}`} key={item.n}>{item.n}</button>)}</div>
-      <button className="advance-button" type="button" onClick={() => setIndex((index + 1) % protocolSteps.length)}><span>次工程</span><span aria-hidden="true">→</span></button>
-    </div>
-  </div>;
+    <p className="banana-3d-hint">MOVE POINTER / WAIT FOR THE BANANA / LOOP 10 SEC</p>
+  </section>;
 }
 
 const phoneKeys: Record<string, string> = {
