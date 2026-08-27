@@ -54,6 +54,16 @@ export function SiteShell({ children, current, plate }: { children: ReactNode; c
           <span>NO PUBLIC SERVICE IS CURRENTLY AVAILABLE.</span>
           <span>2026 / FOREST OFFICE</span>
         </div>
+        <div className="footer-attribution">
+          <div>
+            <span className="kicker">制作</span>
+            <p>このサイトは「ふざけてるけど真面目」をテーマに、OpenAI GPT-5.6 Sol が作りました。</p>
+          </div>
+          <div>
+            <span className="kicker">姉妹サイト</span>
+            <p><a href="https://pan-tool-standards.kyotomalmal25.workers.dev/" target="_blank" rel="noreferrer">同じテーマで Anthropic Claude Opus 5 が作ったものが姉妹サイトです。</a></p>
+          </div>
+        </div>
       </footer>
     </main>
   );
