@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     google: "WtmBq6xK9s63O5KMQPDL45AZ1nWgr3TP4rAk8PxqBJg",
   },
   icons: {
-    icon: "/chimpanzee-favorite.png",
-    shortcut: "/chimpanzee-favorite.png",
+    icon: "/favicon-chimpanzee.png",
+    shortcut: "/favicon-chimpanzee.png",
   },
 };
 
