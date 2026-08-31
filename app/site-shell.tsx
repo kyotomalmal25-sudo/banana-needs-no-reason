@@ -19,7 +19,7 @@ export function SiteShell({ children, current, plate }: { children: ReactNode; c
     <main>
       <header className="site-header">
         <a className="site-mark" href="/" aria-label="DBNR / トップへ">
-          <span className="mark-emblem" aria-hidden="true"><img src="/chimpanzee-profile.png" alt="" /></span>
+          <span className="mark-emblem" aria-hidden="true"><img src="/chimpanzee-heart-mark.png" alt="" /></span>
           <span className="mark-word">DBNR</span>
         </a>
         <nav aria-label="主要ページ">
