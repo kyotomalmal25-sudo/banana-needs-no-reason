@@ -27,7 +27,9 @@ async function rewrite(directory) {
     }
     if (!textExtensions.has(path.extname(entry.name))) continue;
     const original = await readFile(file, "utf8");
-    const rewritten = original.replace(/(["'`(])\/(?!\/)/g, (match, prefix, offset, whole) => {
+    // Rewrite root-relative URLs while leaving HTML/XML closing and self-closing
+    // syntax intact (for example `"/>` must never become an attribute value).
+    const rewritten = original.replace(/(["'`(])\/(?![\/>])/g, (match, prefix, offset, whole) => {
       const rest = whole.slice(offset + match.length);
       return rest.startsWith(`${baseName}/`) ? match : `${prefix}/${baseName}/`;
     });
