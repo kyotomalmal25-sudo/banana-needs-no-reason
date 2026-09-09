@@ -17,7 +17,9 @@ for (const route of ["profile", "protocol", "phone"]) {
   await writeFile(path.join(directory, "index.html"), html);
 }
 
-const textExtensions = new Set([".html", ".css", ".js", ".json", ".map"]);
+// Keep JavaScript bundles byte-for-byte intact. Rewriting their source text can
+// corrupt regex literals and stop hydration before client interactions mount.
+const textExtensions = new Set([".html", ".css"]);
 async function rewrite(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const file = path.join(directory, entry.name);
