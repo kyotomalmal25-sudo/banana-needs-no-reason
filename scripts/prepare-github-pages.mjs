@@ -7,15 +7,20 @@ const output = path.join(root, "site");
 const snapshots = path.join(root, "github-pages-snapshots");
 const baseName = "banana-needs-no-reason";
 const assetVersion = process.env.GITHUB_SHA?.slice(0, 12) || "dev";
+const protocolFallback = path.join(root, "scripts", "github-pages-protocol.js");
 
 await rm(output, { recursive: true, force: true });
 await cp(source, output, { recursive: true });
+await cp(protocolFallback, path.join(output, "github-pages-protocol.js"));
 
 for (const route of ["profile", "protocol", "phone"]) {
   const html = await readFile(path.join(snapshots, `${route}.html`), "utf8");
   const directory = path.join(output, route);
   await mkdir(directory, { recursive: true });
-  await writeFile(path.join(directory, "index.html"), html);
+  const fallback = route === "protocol"
+    ? `\n<script src="/${baseName}/github-pages-protocol.js?v=${assetVersion}" defer></script>\n`
+    : "";
+  await writeFile(path.join(directory, "index.html"), `${html}${fallback}`);
 }
 
 // Keep JavaScript bundles byte-for-byte intact. Rewriting their source text can
