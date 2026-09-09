@@ -6,6 +6,7 @@ const source = path.join(root, "dist", "client");
 const output = path.join(root, "site");
 const snapshots = path.join(root, "github-pages-snapshots");
 const baseName = "banana-needs-no-reason";
+const assetVersion = process.env.GITHUB_SHA?.slice(0, 12) || "dev";
 
 await rm(output, { recursive: true, force: true });
 await cp(source, output, { recursive: true });
@@ -31,10 +32,13 @@ async function rewrite(directory) {
     const original = await readFile(file, "utf8");
     // Rewrite root-relative URLs while leaving HTML/XML closing and self-closing
     // syntax intact (for example `"/>` must never become an attribute value).
-    const rewritten = original.replace(/(["'`(])\/(?![\/>])/g, (match, prefix, offset, whole) => {
+    const withBase = original.replace(/(["'`(])\/(?![\/>])/g, (match, prefix, offset, whole) => {
       const rest = whole.slice(offset + match.length);
       return rest.startsWith(`${baseName}/`) ? match : `${prefix}/${baseName}/`;
     });
+    const rewritten = entry.name.endsWith(".html")
+      ? withBase.replace(/(\/banana-needs-no-reason\/_next\/[^"'\\s<>]+)(?=["'])/g, (match) => match.includes("?") ? match : `${match}?v=${assetVersion}`)
+      : withBase;
     if (rewritten !== original) await writeFile(file, rewritten);
   }
 }
