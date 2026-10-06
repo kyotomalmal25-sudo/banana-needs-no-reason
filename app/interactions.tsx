@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type PointerEvent } from "react";
 
 const monkeyStates = [
   { id: "see", number: "01", ja: "見ざる", en: "SEE NO EVIL", note: "視界から理由を除外する。", image: "/monkey-see-pop-v1.png", poster: { rail: "UNSEEN", top: "HISTORY / CULTURE", major: "POLITICS", mid: "LOOK AWAY", bottom: "BETTER LEFT UNSEEN", mini: "PUBLIC MEMORY / ARCHIVE CLOSED" } },
@@ -61,10 +61,10 @@ export function Banana3D() {
   const modeRef = useRef(0);
   const [mode, setMode] = useState(0);
   const liquidModes = [
-  { n: "01", label: "よく観る", value: 0 },
-  { n: "02", label: "触る", value: 1 },
-  { n: "03", label: "匂いを嗅ぐ", value: 2 },
-  { n: "04", label: "皮を剥く", value: 3 },
+  { n: "01", label: "よく観る", value: 0, note: "観察。液体は10秒周期で形を変える。" },
+  { n: "02", label: "触る", value: 1, note: "接触。形は半分だけ保たれる。" },
+  { n: "03", label: "匂いを嗅ぐ", value: 2, note: "嗅覚。バナナはほぼ液体に戻る。" },
+  { n: "04", label: "皮を剥く", value: 3, note: "剥離。バナナの形が最も安定する。" },
   ];
 
   useEffect(() => { modeRef.current = mode; }, [mode]);
@@ -271,12 +271,12 @@ export function Banana3D() {
           <span>OBSERVATION / BP-06</span>
           <h2>Signals from<br />the Yellow Matter</h2>
           <p>漂う液体は形を変えながら、ほんの一瞬だけバナナとして現れる。</p>
-          <button type="button" onClick={() => setMode(2)}><span>バナナにしよう</span><span aria-hidden="true">→</span></button>
+          <button type="button" onClick={() => setMode(3)}><span>バナナにしよう</span><span aria-hidden="true">→</span></button>
         </div>
         <div className="banana-liquid-axis" aria-hidden="true"><span /><span /></div>
       </div>
       <aside className="banana-menu banana-liquid-menu" aria-label="液体バナナの形状メニュー">
-        <div className="banana-menu-readout"><span>FORM OBSERVATION / {liquidModes[mode].n}</span><p>LIQUID BANANA TRACE</p><strong>皮むき手順</strong></div>
+        <div className="banana-menu-readout"><span>FORM OBSERVATION / {liquidModes[mode].n}</span><p>LIQUID BANANA TRACE</p><strong>皮むき手順</strong><em className="banana-menu-note" aria-live="polite">{liquidModes[mode].note}</em></div>
         <div className="banana-menu-controls" role="group" aria-label="流体の状態を選択">
           {liquidModes.map((item) => <button type="button" key={item.n} onClick={() => setMode(item.value)} className={mode === item.value ? "active" : undefined}><span>{item.n}</span><strong>{item.label}</strong></button>)}
         </div>
@@ -299,4 +299,94 @@ export function PhoneConsole() {
     </div>
     <div className="phone-legend"><p><span>1</span>観察</p><p><span>2</span>把持</p><p><span>3</span>皮むき</p><p><span>0</span>沈黙</p><p><span>#</span>理由を拒否</p><p><span>*</span>バナナに戻る</p></div>
   </div>;
+}
+
+const procedureSteps = [
+  { n: "01", ja: "よく観る", en: "OBSERVE", action: "皮の色、斑点、軸の曲がりを確認する。", pass: "黄色であることを3秒以上確認する。", ban: "観察の前に握りしめる。", sec: 30 },
+  { n: "02", ja: "触る", en: "TOUCH", action: "親指と人差し指で軽く押し、硬さを確かめる。", pass: "指が沈み、離すと戻る。", ban: "他の個体のバナナに触れる。", sec: 10 },
+  { n: "03", ja: "匂いを嗅ぐ", en: "SMELL", action: "軸の付け根に鼻を近づける。", pass: "甘い香りがする。", ban: "3回を超えて嗅ぎ直す。疑念が生じるため。", sec: 10 },
+  { n: "04", ja: "皮を剥く", en: "PEEL", action: "軸の反対側の先端をつまみ、そこから割る。", pass: "繊維が切れずに剥ける。", ban: "剥いたあとに理由を求める。", sec: 20 },
+];
+
+const procedureExceptions = [
+  { when: "皮が緑色である", then: "待機する。3日後に手順01へ戻る。" },
+  { when: "皮に黒い斑点が多い", then: "続行する。斑点は熟度の記録であり、欠陥ではない。" },
+  { when: "隣の個体も同じバナナを食べている", then: "続行する。比較は行わない。" },
+  { when: "理由を尋ねられた", then: "このサイトの題名を提示する。" },
+];
+
+const totalSeconds = procedureSteps.reduce((sum, step) => sum + step.sec, 0);
+
+export function ProtocolProcedure() {
+  const [done, setDone] = useState<boolean[]>(() => procedureSteps.map(() => false));
+  const [reason, setReason] = useState("");
+  const [receipt, setReceipt] = useState("");
+  const count = done.filter(Boolean).length;
+
+  const toggle = (index: number) => setDone((current) => current.map((value, i) => (i === index ? !value : value)));
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setReceipt(reason.trim() ? "受理しました。理由は記録も保管もされません。" : "空欄のまま受理しました。正しい運用です。");
+    setReason("");
+  };
+
+  return <section className="sop-section" aria-labelledby="sop-title">
+    <header className="sop-head">
+      <div>
+        <p className="kicker">Procedure / BP-06</p>
+        <h2 id="sop-title"><span className="sop-highlight">理由はいらない。ただし手順はある。</span></h2>
+      </div>
+      <div className="sop-meta" aria-label="手順の概要">
+        <span>STEPS / {String(procedureSteps.length).padStart(2, "0")}</span>
+        <span>STANDARD TIME / {totalSeconds} SEC</span>
+        <span>DEVIATION / RECORDED, THEN ALLOWED</span>
+      </div>
+    </header>
+
+    <div className="sop-progress">
+      <span aria-live="polite">実施記録 {count} / {procedureSteps.length}</span>
+      <span className="sop-segments" aria-hidden="true">{procedureSteps.map((step, i) => <i key={step.n} className={i < count ? "on" : undefined} />)}</span>
+    </div>
+
+    <ol className="sop-list">
+      {procedureSteps.map((step, i) => <li className={done[i] ? "sop-step done" : "sop-step"} key={step.n}>
+        <span className="sop-num" aria-hidden="true">{step.n}</span>
+        <div className="sop-body">
+          <h3>{step.ja}<small>{step.en}</small></h3>
+          <p className="sop-action">{step.action}</p>
+          <dl className="sop-spec">
+            <div><dt>合格条件</dt><dd>{step.pass}</dd></div>
+            <div><dt>禁止事項</dt><dd>{step.ban}</dd></div>
+            <div><dt>目安</dt><dd>{step.sec} 秒</dd></div>
+          </dl>
+        </div>
+        <button type="button" className="sop-check" aria-pressed={done[i]} aria-label={`手順${step.n} ${step.ja}を${done[i] ? "取り消す" : "実施済みにする"}`} onClick={() => toggle(i)}>{done[i] ? "実施済み" : "実施済みにする"}</button>
+      </li>)}
+    </ol>
+    <p className="sop-complete" aria-live="polite">{count === procedureSteps.length ? "全4手順を実施しました。理由欄は空欄のまま提出できます。" : "\u00a0"}</p>
+
+    <div className="sop-sub">
+      <p className="kicker">Exceptions / 例外対応</p>
+      <h2>逸脱しても、理由は要らない。</h2>
+      <div className="sop-table-wrap">
+        <table className="sop-table">
+          <thead><tr><th scope="col">状況</th><th scope="col">対応</th><th scope="col">理由の提出</th></tr></thead>
+          <tbody>{procedureExceptions.map((row) => <tr key={row.when}><th scope="row">{row.when}</th><td>{row.then}</td><td><span className="sop-no">不要</span></td></tr>)}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div className="sop-sub">
+      <p className="kicker">Reason field / 理由欄</p>
+      <h2>どうしても書きたい場合のみ。</h2>
+      <form className="sop-reason" onSubmit={submit}>
+        <label htmlFor="sop-reason-input">理由（任意・空欄可）</label>
+        <div className="sop-reason-row">
+          <input id="sop-reason-input" name="reason" type="text" autoComplete="off" value={reason} onChange={(event) => setReason(event.target.value)} />
+          <button type="submit" className="sop-submit">提出する</button>
+        </div>
+        <p className="sop-receipt" aria-live="polite">{receipt || "\u00a0"}</p>
+      </form>
+    </div>
+  </section>;
 }
