@@ -5,7 +5,7 @@ const links = [
   { id: "profile", href: "/profile", label: "Profile" },
   { id: "protocol", href: "/protocol", label: "Protocol" },
   { id: "phone", href: "/phone", label: "Phone" },
-  { id: "museum", href: "https://chimpanzee-museum-v2.pages.dev/", label: "Chimpanzee Museum", external: true },
+  { id: "museum", href: "https://chimpanzee-museum-v2.pages.dev/", label: "Museum", external: true },
 ];
 
 const fieldLinks = [
