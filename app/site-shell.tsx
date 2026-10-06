@@ -62,14 +62,14 @@ export function SiteShell({ children, current, plate }: { children: ReactNode; c
             <a className="attribution-icon" href="https://banana-needs-no-reason.kyotomalmal25.chatgpt.site/" target="_blank" rel="noreferrer" aria-label="GPT 版のサイトを開く"><img src="/footer-gpt.png" alt="" width="44" height="44" /></a>
             <div>
               <span className="kicker">制作</span>
-              <p>このサイトは「ふざけてるけど真面目」をテーマに、OpenAI GPT-5.6 Sol が作りました。</p>
+              <p>このサイトは「ふざけてるけど真面目」をテーマに、OpenAI GPT が作りました。</p>
             </div>
           </div>
           <div className="attribution-item">
             <a className="attribution-icon" href="https://pan-tool-standards.kyotomalmal25.workers.dev/" target="_blank" rel="noreferrer" aria-label="姉妹サイトを開く"><img src="/footer-claude.png" alt="" width="44" height="44" /></a>
             <div>
               <span className="kicker">姉妹サイト</span>
-              <p><a href="https://pan-tool-standards.kyotomalmal25.workers.dev/" target="_blank" rel="noreferrer">同じテーマで Anthropic Claude Opus 5 が作ったものが姉妹サイトです。</a></p>
+              <p><a href="https://pan-tool-standards.kyotomalmal25.workers.dev/" target="_blank" rel="noreferrer">同じテーマで Anthropic Claude が作ったものが姉妹サイトです。</a></p>
             </div>
           </div>
         </div>
