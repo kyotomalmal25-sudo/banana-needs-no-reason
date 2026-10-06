@@ -70,7 +70,7 @@ main { min-height:100vh; overflow:hidden; }
 .subject-dossier { background:var(--white); border-bottom:1px solid var(--ink); display:grid; grid-template-columns:minmax(240px,.42fr) minmax(0,1.58fr); min-height:400px; }
 .subject-index { background:var(--white); border-bottom:10px solid var(--yellow); border-right:1px solid var(--ink); display:grid; grid-template-rows:auto 1fr auto; min-width:0; overflow:hidden; padding:clamp(26px,3.4vw,48px); }
 .subject-index .kicker { color:var(--muted); }
-.subject-index>strong { align-self:center; font-family:var(--font-geist-mono),monospace; font-size:clamp(126px,15vw,220px); font-weight:760; letter-spacing:-.13em; line-height:.72; margin-left:-.09em; }
+.subject-index>.subject-door { align-self:center; } .subject-index .subject-door strong { font-family:var(--font-geist-mono),monospace; font-size:clamp(126px,15vw,220px); font-weight:760; letter-spacing:-.13em; line-height:.72; margin-left:-.09em; }
 .subject-index-meta { border-top:1px solid var(--line); display:flex; font-family:var(--font-geist-mono),monospace; font-size:8px; justify-content:space-between; padding-top:12px; }
 .subject-record { align-items:center; background:var(--white); display:grid; gap:clamp(56px,9vw,144px); grid-template-columns:minmax(250px,1fr) minmax(280px,.85fr); overflow:hidden; padding:clamp(52px,7vw,96px); position:relative; }
 .subject-record::before { background:url("/chimpanzee-profile.png") 52% 30%/cover no-repeat; content:""; filter:grayscale(1) contrast(1.65); height:100%; mix-blend-mode:multiply; opacity:.055; pointer-events:none; position:absolute; right:0; top:0; width:48%; }
@@ -226,7 +226,7 @@ main { min-height:100vh; overflow:hidden; }
   .top-exhibit,.page-intro { grid-template-columns:1fr; }
   .presence-strip { border-left:0; border-top:1px solid var(--ink); min-height:420px; } .hero-note { grid-column:1; }
   .phone-intro-copy { border-left:0; border-top:1px solid var(--ink); padding:22px 0 0; }
-  .subject-dossier { grid-template-columns:1fr; } .subject-index { border-bottom:10px solid var(--yellow); border-right:0; min-height:250px; } .subject-index>strong { font-size:176px; justify-self:end; } .subject-record { grid-template-columns:minmax(260px,1fr) minmax(240px,.8fr); }
+  .subject-dossier { grid-template-columns:1fr; } .subject-index { border-bottom:10px solid var(--yellow); border-right:0; min-height:250px; } .subject-index>.subject-door { justify-self:end; } .subject-index .subject-door strong { font-size:176px; } .subject-record { grid-template-columns:minmax(260px,1fr) minmax(240px,.8fr); }
   .state-console,.protocol-console { grid-template-columns:1fr; } .state-buttons { grid-template-columns:repeat(2,1fr); }
   .banana-3d-stage { height:620px; } .banana-liquid-intro { left:48px; top:96px; } .banana-menu { right:38px; width:290px; }
   .banana-diagram { border-bottom:1px solid var(--ink); border-right:0; min-height:520px; } .phone-stage { min-height:750px; }
@@ -242,7 +242,7 @@ main { min-height:100vh; overflow:hidden; }
   .operating-grid { gap:42px; grid-template-columns:1fr; } .operating-note { transform:rotate(-.5deg); }
   .manual-stamp { bottom:24px; height:72px; right:26px; width:72px; }
   .page-intro { align-items:start; min-height:360px; } .compact-intro { min-height:320px; } .intro-copy,.manual-summary { border-left:0; border-top:1px solid var(--ink); padding:22px 0 0; }
-  .subject-index { min-height:220px; padding:28px 24px; } .subject-index>strong { align-self:center; font-size:142px; justify-self:end; } .subject-record { gap:42px; grid-template-columns:1fr; padding:52px 24px; } .subject-record::before { background-position:50% 24%; opacity:.04; width:100%; } .subject-summary h2 { font-size:clamp(42px,13vw,64px); }
+  .subject-index { min-height:220px; padding:28px 24px; } .subject-index>.subject-door { align-self:center; justify-self:end; } .subject-index .subject-door strong { font-size:142px; } .subject-record { gap:42px; grid-template-columns:1fr; padding:52px 24px; } .subject-record::before { background-position:50% 24%; opacity:.04; width:100%; } .subject-summary h2 { font-size:clamp(42px,13vw,64px); }
   .states-heading-minimal { align-items:start; flex-direction:column; gap:10px; }
   .state-buttons { grid-template-columns:1fr 1fr; } .state-buttons button { min-height:220px; } .state-art { height:82px; } .state-art img { height:76px; width:76px; } .state-art img.banana-art { height:auto; width:min(108px,105%); } .state-art img.monkey-pop-art { height:92px; width:92px; }
   .manual-sheet { margin:18px; } .manual-sheet>header { grid-template-columns:1fr; } .manual-sheet>header div { border-bottom:1px solid var(--line); border-right:0; }
