@@ -217,6 +217,8 @@ main { min-height:100vh; overflow:hidden; }
 .footer-attribution { border-top:1px solid var(--ink); display:grid; gap:28px; grid-column:1/-1; grid-template-columns:repeat(2,1fr); padding:22px 0 28px; }
 .footer-attribution .kicker { display:block; font-size:9px; margin-bottom:9px; }
 .footer-attribution p { font-size:11px; line-height:1.7; margin:0; max-width:620px; }
+.attribution-item { align-items:start; display:flex; gap:16px; }
+.attribution-icon { display:block; flex:none; height:44px; line-height:0; width:44px; transition:transform 160ms ease; } .attribution-icon:hover { transform:translateY(-2px); } .attribution-icon img { border-radius:10px; display:block; height:44px; width:44px; }
 .footer-attribution a { color:inherit; text-decoration-thickness:1px; text-underline-offset:3px; }
 
 @media (max-width:980px) {
