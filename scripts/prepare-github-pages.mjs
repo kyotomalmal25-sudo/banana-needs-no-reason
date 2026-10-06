@@ -30,6 +30,8 @@ async function rewrite(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const file = path.join(directory, entry.name);
     if (entry.isDirectory()) {
+      // banana-phone is a self-contained page; its inline script has regex literals the rewrite would corrupt.
+      if (entry.name === "banana-phone") continue;
       await rewrite(file);
       continue;
     }

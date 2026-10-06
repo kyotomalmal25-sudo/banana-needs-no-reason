@@ -1,0 +1,1171 @@
+<!doctype html><html lang="ja"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>BananaPhone Ω</title>
+<style>
+/* Layout concept: a Yellow Pages spread. Yellow ground, ink type, one dark phone-booth panel
+   holding a live handset; the call log sits beside it, the directory (電話帳) fills in as you dial. */
+:root{
+  --bg:#F6D21A;
+  --bg-deep:#E7BE00;
+  --paper:#FFF8D2;
+  --fg:#1A1405;
+  --muted:#5A4A0A;
+  --line:rgba(26,20,5,.28);
+  --accent:#2243C8;
+  --accent-soft:rgba(34,67,200,.14);
+  --good:#1E7A3C;
+  --booth:#17120A;
+  --booth-fg:#F6E7A0;
+  --booth-line:rgba(246,231,160,.22);
+  --sticker-bg:#2243C8;
+  --sticker-fg:#FFFFFF;
+  --lcd-bg:#0E1A0B;
+  --lcd-fg:#8DF28B;
+  --phone-edge:#3A2A08;
+  --phone-ink:#3A2A08;
+  --phone-key:rgba(255,255,255,.46);
+  --phone-key-hover:rgba(255,255,255,.7);
+  --call-go:#2E9E4C;
+  --call-go-edge:#1F7236;
+  --call-end:#C2321B;
+  --call-end-edge:#7C1F0F;
+  --pop-red:#E5432A;
+  --pop-green:#2E9E4C;
+  --pop-blue:#2243C8;
+  --on-pop:#FFFFFF;
+  --chip:#FFFDF0;
+  --booth-yellow:#F6D21A;
+  --font-d:'Dela Gothic One','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  --font-b:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic','Noto Sans JP',sans-serif;
+  --font-m:'DotGothic16','Hiragino Maru Gothic ProN','Yu Gothic',monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13100A; --chip:#2A2412; --bg-deep:#0C0A06; --paper:#1E1A0E; --fg:#F4E8A6; --muted:#BDAE6A;
+    --line:rgba(244,232,166,.24); --accent:#9BAEFF; --accent-soft:rgba(155,174,255,.16); --good:#7FD99A;
+    --booth:#0A0804; --booth-line:rgba(246,231,160,.2);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13100A; --chip:#2A2412; --bg-deep:#0C0A06; --paper:#1E1A0E; --fg:#F4E8A6; --muted:#BDAE6A;
+  --line:rgba(244,232,166,.24); --accent:#9BAEFF; --accent-soft:rgba(155,174,255,.16); --good:#7FD99A;
+  --booth:#0A0804; --booth-line:rgba(246,231,160,.2);
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; padding-inline:16px; padding-block:0;
+  background:var(--bg); color:var(--fg);
+  font-family:var(--font-b); font-size:16px; line-height:1.7;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+}
+h1,h2,h3{font-family:var(--font-d); font-weight:400; margin:0; line-height:1.15; text-wrap:balance;}
+p{margin:0;}
+button{font-family:inherit; color:inherit;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+.wrap{max-width:1120px; margin-inline:auto;}
+.lab{font-family:var(--font-m); font-size:13px; letter-spacing:.12em; text-transform:uppercase;}
+
+/* ---------- top bar ---------- */
+.bar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:30;
+  margin-inline:-16px; padding-inline:16px;
+  background:var(--bg); border-bottom:2px solid var(--fg);
+}
+.bar .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:12px;}
+.logo{font-family:var(--font-d); font-size:20px; letter-spacing:.02em; text-decoration:none; display:flex; align-items:center; gap:10px; white-space:nowrap;}
+.logo i{width:22px; height:22px; background:var(--fg); border-radius:60% 40% 55% 45%/55% 45% 55% 45%; transform:rotate(-18deg); display:inline-block;}
+.bar nav{display:flex; gap:22px; font-weight:700; font-size:14px;}
+.bar nav a{text-decoration:none; padding:4px 0; border-bottom:2px solid transparent;}
+.bar nav a:hover{border-color:var(--fg);}
+@media (max-width:680px){ .bar nav{display:none;} }
+.bar-r{display:flex; align-items:center; gap:22px;}
+.theme{display:inline-flex; border:2px solid var(--fg); border-radius:99px; padding:2px; gap:2px;}
+.theme button{border:0; background:transparent; cursor:pointer; border-radius:99px; padding:3px 12px; font-weight:900; font-size:13px; letter-spacing:.04em; display:inline-flex; align-items:center; gap:6px;}
+.theme button i{width:10px; height:10px; border-radius:50%; border:1.5px solid var(--fg);}
+.theme button[data-t="light"] i{background:#F6D21A;}
+.theme button[data-t="dark"] i{background:#13100A;}
+.theme button[aria-pressed="true"]{background:var(--fg); color:var(--bg);}
+.theme button[aria-pressed="true"] i{border-color:var(--bg);}
+
+/* ---------- stage: intro + booth + line ---------- */
+.stage{
+  display:grid; gap:24px 32px; padding-block:32px 64px;
+  grid-template-columns:minmax(0,380px) minmax(0,1fr);
+  grid-template-areas:"intro intro" "booth line";
+  align-items:stretch;
+}
+.intro{grid-area:intro; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:16px 48px; align-items:end;}
+.i-l,.i-r{display:flex; flex-direction:column; gap:16px; min-width:0;}
+.booth{grid-area:booth;}
+.line{grid-area:line;}
+@media (min-width:881px){ .line{contain:size; min-height:560px;} .line #log{flex:1 1 auto; min-height:0; max-height:none;} }
+@media (max-width:880px){
+  .stage{grid-template-columns:minmax(0,1fr); grid-template-areas:"intro" "booth" "line"; padding-block:28px 48px;}
+  .intro{grid-template-columns:minmax(0,1fr);}
+}
+.eyebrow{
+  align-self:flex-start; display:inline-flex; align-items:center; gap:8px;
+  padding:5px 12px; border:2px solid var(--fg); border-radius:999px;
+}
+.eyebrow b{width:8px; height:8px; border-radius:50%; background:var(--call-end); animation:blink 1.6s steps(2,jump-none) infinite;}
+@keyframes blink{50%{opacity:.15;}}
+.intro h1{font-size:clamp(36px,5.6vw,66px); letter-spacing:-.01em;}
+.intro h1 em{
+  font-style:normal; display:inline-block; padding:0 .12em; margin-inline:.04em;
+  background:var(--fg); color:var(--bg); transform:rotate(-1.5deg);
+}
+.lede{max-width:34em; font-size:16px; color:var(--muted); font-weight:500;}
+.stats{display:flex; flex-wrap:wrap; gap:10px 32px; margin:0; padding:0; list-style:none;}
+.stats li{display:flex; flex-direction:column; font-family:var(--font-m); font-size:12px; letter-spacing:.08em; color:var(--muted);}
+.stats strong{font-family:var(--font-d); font-weight:400; font-size:26px; color:var(--fg); letter-spacing:0; font-variant-numeric:tabular-nums;}
+
+/* ---------- booth + phone ---------- */
+.booth{
+  position:relative; background:var(--booth); color:var(--booth-fg);
+  border:2px solid var(--fg); border-radius:28px; padding:36px 22px 22px;
+  display:flex; flex-direction:column; align-items:center; gap:18px;
+  box-shadow:8px 8px 0 var(--fg);
+}
+.sticker{
+  position:absolute; top:-18px; right:-8px; z-index:3; transform:rotate(9deg);
+  width:104px; padding:9px 6px 8px; text-align:center;
+  background:var(--sticker-bg); color:var(--sticker-fg);
+  border-radius:50%/42%; border:2px solid var(--sticker-fg);
+  font-family:var(--font-m); font-size:11px; line-height:1.25; letter-spacing:.04em;
+  box-shadow:0 0 0 2px var(--sticker-bg);
+}
+.sticker b{display:block; font-family:var(--font-d); font-weight:400; font-size:20px; letter-spacing:.02em;}
+.phone{
+  position:relative; width:min(100%,320px); aspect-ratio:1/2;
+  container-type:inline-size;
+  --skin:#F2CC1A; --skin-real:#F2CC1A; --tips:.4; --brown:0;
+}
+.tilt{position:absolute; inset:0; transform:rotate(-2deg); transform-origin:50% 60%;}
+.phone.ringing .tilt{animation:ring .36s ease-in-out infinite;}
+@keyframes ring{0%,100%{transform:rotate(-2deg);}25%{transform:rotate(-6deg);}50%{transform:rotate(2deg);}75%{transform:rotate(-5deg);}}
+.art{position:absolute; inset:0; width:100%; height:100%; display:block; filter:drop-shadow(0 18px 18px rgba(0,0,0,.6));}
+.art .b-fill{fill:var(--skin); transition:fill .6s ease;}
+.art .tipg{opacity:var(--tips); transition:opacity .6s ease;}
+.art .brown{fill:#5B3A0C; opacity:var(--brown); transition:opacity .6s ease;}
+.art .rim{fill:none; stroke:var(--skin-real); stroke-width:26; opacity:0; transition:opacity .4s ease;}
+.art .stem{fill:#4A3418;}
+.art .tipend{fill:#4A3418; opacity:.85;}
+.phone.peeled .rim{opacity:1;}
+.phone.peeled .tipg,.phone.peeled #spots,.phone.peeled .brown{opacity:0;}
+
+.screen{
+  position:absolute; left:23.33%; width:53.33%; top:21.33%; height:14.33%;
+  background:var(--lcd-bg); color:var(--lcd-fg); border-radius:3cqw;
+  padding:2.2cqw 3cqw; display:flex; flex-direction:column; justify-content:space-between;
+  box-shadow:inset 0 0 0 .8cqw rgba(0,0,0,.45), inset 0 1.4cqw 3cqw rgba(0,0,0,.6);
+  font-family:var(--font-m);
+  background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 3px);
+}
+.screen .r{display:flex; justify-content:space-between; gap:2cqw; font-size:2.9cqw; letter-spacing:.06em; opacity:.75; white-space:nowrap;}
+.screen .d{font-size:6.6cqw; letter-spacing:.07em; text-shadow:0 0 6px currentColor; min-height:7.6cqw; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+.screen .m{font-size:3.4cqw; opacity:.9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.screen.live .r span:first-child{animation:blink 1.2s steps(2,jump-none) infinite;}
+
+.pad{
+  position:absolute; left:23.33%; width:53.33%; top:38.67%; height:37.33%;
+  display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(4,1fr); gap:2.6cqw;
+}
+.key{
+  border:0; border-radius:2.8cqw; cursor:pointer; background:var(--phone-key); color:var(--phone-ink);
+  box-shadow:0 .7cqw 0 rgba(58,42,8,.4), inset 0 .4cqw 0 rgba(255,255,255,.55);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1;
+  transition:transform .06s ease, background .15s ease;
+}
+.key:hover{background:var(--phone-key-hover);}
+.key:active,.key.on{transform:translateY(.7cqw); box-shadow:none; background:var(--phone-key-hover);}
+.key .n{font-family:var(--font-m); font-size:6cqw;}
+.key .s{font-size:2.9cqw; margin-top:.8cqw; letter-spacing:.02em; font-weight:700; opacity:.78;}
+.key.act .s{opacity:1;}
+.phone.live .key.act{box-shadow:0 .7cqw 0 rgba(58,42,8,.4), inset 0 0 0 .7cqw var(--accent);}
+.phone.live .key.act.on{box-shadow:inset 0 0 0 .7cqw var(--accent);}
+
+.calls{position:absolute; left:23.33%; width:53.33%; top:78%; height:6.33%; display:flex; gap:2.6cqw;}
+.calls button{
+  flex:1; border:0; border-radius:99px; cursor:pointer; font-weight:900; font-size:3.7cqw; letter-spacing:.06em;
+  transition:transform .08s ease;
+}
+.calls button:active{transform:translateY(.7cqw);}
+#clearBtn{background:rgba(0,0,0,.14); color:var(--phone-ink); box-shadow:0 .8cqw 0 rgba(0,0,0,.2);}
+#callBtn{background:var(--call-go); color:#F4FFF3; box-shadow:0 .8cqw 0 var(--call-go-edge);}
+#callBtn.end{background:var(--call-end); box-shadow:0 .8cqw 0 var(--call-end-edge);}
+
+.caption{display:none;}
+@media (max-width:880px){
+  .caption{display:block; width:100%; min-height:5.2em; margin:0; padding:10px 14px; border-radius:12px; background:rgba(246,231,160,.07); color:var(--booth-fg); font-size:15px; line-height:1.65; text-align:left;}
+  .caption b{display:block; font-family:var(--font-m); font-weight:400; font-size:12px; letter-spacing:.1em; opacity:.65;}
+  .caption:empty{display:none;}
+  .phone{width:min(100%,290px);}
+}
+.tools{display:flex; flex-wrap:wrap; justify-content:center; gap:10px 18px; width:100%;}
+.sw{display:inline-flex; align-items:center; gap:10px; background:none; border:0; cursor:pointer; padding:6px 4px; font-family:var(--font-m); font-size:13px; letter-spacing:.06em; color:var(--booth-fg);}
+.sw .track{width:44px; height:24px; border-radius:99px; border:1.5px solid var(--booth-line); background:rgba(255,255,255,.08); position:relative; transition:background .2s ease;}
+.sw .knob{position:absolute; top:2px; left:2px; width:17px; height:17px; border-radius:50%; background:var(--booth-fg); transition:left .22s ease;}
+.sw[aria-checked="true"] .track{background:rgba(246,231,160,.28);}
+.sw[aria-checked="true"] .knob{left:23px;}
+.eat{
+  border:2px solid var(--booth-fg); background:transparent; color:var(--booth-fg); border-radius:99px; cursor:pointer;
+  padding:6px 16px; font-weight:900; font-size:13px; letter-spacing:.06em;
+}
+.eat:hover:not(:disabled){background:var(--booth-fg); color:var(--booth);}
+.eat:disabled{opacity:.35; cursor:not-allowed;}
+.eat.pulse{animation:pulse .5s ease 3;}
+@keyframes pulse{50%{background:var(--call-end); border-color:var(--call-end); color:#fff;}}
+
+/* ---------- call line panel ---------- */
+.line{
+  background:var(--paper); border:2px solid var(--fg); border-radius:20px; padding:18px 20px 16px;
+  display:flex; flex-direction:column; gap:12px; min-width:0;
+}
+.line-head{display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:14px; padding-bottom:10px; border-bottom:2px dashed var(--line);}
+.line-head .lab{color:var(--muted);}
+#timer{color:var(--fg); font-variant-numeric:tabular-nums;}
+#wave{width:100%; height:34px; display:block; color:var(--fg);}
+#log{list-style:none; margin:0; padding:0; min-height:160px; max-height:320px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; scroll-behavior:smooth;}
+#log li{min-width:0;}
+.m-them{display:flex; flex-direction:column; gap:2px;}
+.m-them .who{font-family:var(--font-m); font-size:12px; letter-spacing:.1em; color:var(--muted);}
+.m-them .tx{font-size:17px; line-height:1.8; font-weight:500; overflow-wrap:anywhere;}
+.m-them.unlock .tx{background:var(--accent-soft); box-shadow:-4px 0 0 var(--accent); padding:4px 10px;}
+.m-you{align-self:flex-end;}
+.m-you span{display:inline-flex; align-items:center; gap:8px; background:var(--fg); color:var(--bg); border-radius:99px; padding:3px 14px 3px 4px; font-size:13px; font-weight:700;}
+.m-you b{font-family:var(--font-m); font-weight:400; background:var(--bg); color:var(--fg); width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;}
+.m-sys{font-family:var(--font-m); font-size:13px; color:var(--muted); letter-spacing:.04em; line-height:1.7; overflow-wrap:anywhere;}
+.m-sys.ok{color:var(--good);}
+.hint{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding-top:10px; border-top:2px dashed var(--line); min-height:46px;}
+.hint .cap{font-size:13px; color:var(--muted); margin-right:6px; font-weight:500;}
+.chip{
+  border:2px solid var(--fg); background:transparent; border-radius:99px; padding:3px 12px; cursor:pointer;
+  font-size:13px; font-weight:700; display:inline-flex; gap:6px; align-items:center;
+}
+.chip:hover{background:var(--fg); color:var(--bg);}
+.chip i{font-style:normal; font-family:var(--font-m); font-weight:400;}
+
+/* ---------- sections ---------- */
+section.s{padding-block:64px; border-top:2px solid var(--fg);}
+.head{max-width:44em; display:flex; flex-direction:column; gap:10px; margin-bottom:32px;}
+.head h2{font-size:clamp(28px,4.4vw,46px);}
+.head p{color:var(--muted); font-weight:500;}
+.head .lab{color:var(--accent);}
+
+/* directory */
+.prog{display:flex; flex-wrap:wrap; gap:8px 24px; font-family:var(--font-m); font-size:14px; letter-spacing:.06em; margin-bottom:18px;}
+.prog b{font-family:var(--font-d); font-weight:400; font-size:20px; font-variant-numeric:tabular-nums;}
+.rand{margin-left:auto;}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr)); gap:14px; list-style:none; margin:0; padding:0;}
+.card{
+  background:var(--paper); border:2px dashed var(--line); border-radius:14px; padding:16px; min-width:0;
+  display:flex; flex-direction:column; gap:8px;
+}
+.card.found{border:2px solid var(--fg); box-shadow:4px 4px 0 var(--fg);}
+.card .tag{align-self:flex-start; background:var(--fg); color:var(--bg); border-radius:4px; padding:1px 8px; font-family:var(--font-m); font-size:12px; letter-spacing:.08em;}
+.card:not(.found) .tag{background:transparent; color:var(--muted); border:1px dashed var(--line);}
+.card h3{font-size:22px;}
+.card:not(.found) h3{color:var(--muted);}
+.card .num{font-family:var(--font-m); font-size:15px; letter-spacing:.1em; color:var(--muted); font-variant-numeric:tabular-nums;}
+.card .q{font-size:15px; font-weight:500; line-height:1.7;}
+.card .sec{font-size:13.5px; line-height:1.7; color:var(--muted); border-left:3px solid var(--accent); padding-left:10px;}
+.card .sec b{font-family:var(--font-m); font-weight:400; color:var(--accent); letter-spacing:.06em; display:block; font-size:12px;}
+.marks{display:flex; gap:6px; margin-top:auto;}
+.mk{font-family:var(--font-m); font-size:12px; letter-spacing:.06em; padding:1px 8px; border-radius:99px; border:1px dashed var(--line); color:var(--muted);}
+.mk.on{border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent);}
+.card .chip{align-self:flex-start;}
+
+/* ripeness chart */
+.stages{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,128px),1fr)); gap:12px;}
+.stg{background:var(--paper); border:2px solid var(--line); border-radius:12px; padding:10px 10px 12px; display:flex; flex-direction:column; gap:8px; position:relative; min-width:0;}
+.stg.now{border-color:var(--fg); box-shadow:4px 4px 0 var(--fg);}
+.stg .sw2{height:54px; border-radius:8px; border:2px solid var(--phone-edge); position:relative; overflow:hidden;}
+.stg .sw2 u{position:absolute; border-radius:50%; background:#5B3A0C; text-decoration:none;}
+.stg .no{font-family:var(--font-d); font-size:22px; line-height:1;}
+.stg p{font-size:13px; line-height:1.55; color:var(--muted); font-weight:500;}
+.stg .nowtag{position:absolute; top:-11px; right:10px; background:var(--accent); color:var(--sticker-fg); font-family:var(--font-m); font-size:12px; padding:0 8px; border-radius:99px; letter-spacing:.06em;}
+html[data-theme="dark"] .stg .nowtag{color:#0B1030;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .stg .nowtag{color:#0B1030;} }
+
+/* rules */
+.three{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:0; border:2px solid var(--fg); border-radius:16px; overflow:hidden; background:var(--fg);}
+.three > div{background:var(--paper); padding:24px 22px; display:flex; flex-direction:column; gap:10px; min-width:0; margin:0 1px 1px 0;}
+.three .keycap{align-self:flex-start; font-family:var(--font-m); background:var(--fg); color:var(--bg); border-radius:8px; padding:2px 12px; font-size:15px;}
+.three h3{font-size:20px;}
+.three p{font-size:15px; color:var(--muted); font-weight:500;}
+
+/* specs + faq */
+.tw{overflow-x:auto;}
+.spec{width:100%; border-collapse:collapse; min-width:440px;}
+.spec td{padding:13px 10px; vertical-align:top; border-bottom:1px solid var(--line); font-size:15px;}
+.spec td:first-child{width:150px; font-family:var(--font-m); font-size:13px; letter-spacing:.08em; color:var(--muted);}
+.spec tr:last-child td{border-bottom:0;}
+.faq{display:flex; flex-direction:column; min-width:0;}
+.duo{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:32px 56px; align-items:start;}
+.duo > div{min-width:0;}
+.duo h3{font-size:20px; margin-bottom:8px;}
+@media (max-width:880px){ .duo{grid-template-columns:minmax(0,1fr);} }
+.faq details{border-bottom:2px solid var(--line);}
+.faq summary{cursor:pointer; list-style:none; padding:18px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px; font-weight:700; font-size:16px;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary::after{content:"+"; font-family:var(--font-m); font-size:22px; color:var(--accent); transition:transform .2s ease; flex:none;}
+.faq details[open] summary::after{transform:rotate(45deg);}
+.faq .a{padding:0 4px 20px; color:var(--muted); font-weight:500; font-size:15px; max-width:42em;}
+
+footer{margin-inline:-16px; padding:40px 16px 28px; background:var(--booth); color:var(--booth-fg);}
+footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 32px; align-items:baseline;}
+footer .big{font-family:var(--font-d); font-size:22px;}
+footer small{font-family:var(--font-m); font-size:12px; letter-spacing:.06em; opacity:.7;}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;}
+
+/* ================= POP layer: one button + label language ================= */
+.lab{font-family:var(--font-b); font-weight:900; font-size:12px; letter-spacing:.1em;}
+.bar nav a{font-weight:900;}
+.eyebrow{background:var(--fg); color:var(--bg); border-color:var(--fg); box-shadow:3px 3px 0 var(--pop-red);}
+.eyebrow b{background:var(--pop-red); animation:none; box-shadow:0 0 0 2px var(--bg);}
+.stats li{font-family:var(--font-b); font-weight:900; font-size:12px; letter-spacing:.06em; color:var(--fg);}
+
+/* buttons */
+.chip, .theme{
+  background:var(--chip); color:var(--fg); border:2px solid var(--fg); border-radius:99px;
+  box-shadow:3px 3px 0 var(--fg);
+}
+.chip{padding:5px 14px; font-weight:900; font-size:13px; letter-spacing:.03em; transition:transform .08s ease, box-shadow .08s ease;}
+.chip:hover{background:var(--chip); color:var(--fg); transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--fg);}
+.chip:active{transform:translate(3px,3px); box-shadow:0 0 0 var(--fg);}
+.chip i{font-family:var(--font-b); font-weight:900; font-size:12px; background:var(--fg); color:var(--chip); border-radius:99px; min-width:22px; height:22px; padding:0 6px; margin-left:-9px; display:inline-flex; align-items:center; justify-content:center;}
+.chip.hot{background:var(--pop-red); color:var(--on-pop);}
+.chip.hot:hover{background:var(--pop-red); color:var(--on-pop);}
+.theme{padding:3px;}
+.theme button{font-weight:900;}
+.eat{
+  background:var(--booth-yellow); color:var(--booth); border:2px solid var(--booth-yellow); padding:6px 18px;
+  box-shadow:3px 3px 0 var(--pop-red); transition:transform .08s ease, box-shadow .08s ease;
+}
+.eat:hover:not(:disabled){background:var(--booth-yellow); color:var(--booth); transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--pop-red);}
+.eat:active:not(:disabled){transform:translate(3px,3px); box-shadow:none;}
+.sw{font-family:var(--font-b); font-weight:900; font-size:13px; letter-spacing:.04em;}
+.sw[aria-checked="true"] .track{background:var(--pop-green); border-color:var(--pop-green);}
+.sw[aria-checked="true"] .knob{background:#fff;}
+
+/* panels */
+.booth{box-shadow:6px 6px 0 var(--fg);}
+.line{box-shadow:6px 6px 0 var(--fg);}
+#callState{background:var(--fg); color:var(--bg); padding:2px 12px; border-radius:99px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;}
+.line.is-live #callState{background:var(--pop-red); color:var(--on-pop);}
+#timer{font-weight:900; font-size:14px;}
+.m-them .who{align-self:flex-start; font-family:var(--font-b); font-weight:900; font-size:11.5px; letter-spacing:.06em; background:var(--pop-blue); color:var(--on-pop); padding:1px 10px; border-radius:99px; margin-bottom:2px;}
+.m-them.unlock .tx{box-shadow:-4px 0 0 var(--pop-blue); border-radius:0 8px 8px 0;}
+.m-sys{font-family:var(--font-b); font-weight:700; font-size:13px; letter-spacing:.02em;}
+.m-sys.ok{font-weight:900;}
+.m-sys.ok::before{content:"＋"; display:inline-flex; width:20px; height:20px; margin-right:6px; border-radius:50%; background:var(--pop-green); color:var(--on-pop); align-items:center; justify-content:center; font-size:12px; vertical-align:1px;}
+.m-you span{box-shadow:2px 2px 0 var(--pop-red);}
+.m-you b{font-family:var(--font-b); font-weight:900; font-size:12px;}
+.hint .cap{font-weight:900; font-size:12px; letter-spacing:.06em; color:var(--fg);}
+
+/* section kickers = stickers */
+.head .lab{align-self:flex-start; background:var(--pop-blue); color:var(--on-pop); padding:3px 14px; border-radius:99px; border:2px solid var(--fg); box-shadow:3px 3px 0 var(--fg); transform:rotate(-1.5deg);}
+
+/* directory */
+.prog{font-family:var(--font-b); font-weight:900; font-size:13px; letter-spacing:.04em; align-items:center;}
+.card .tag{border-radius:99px; padding:2px 11px; font-family:var(--font-b); font-weight:900; font-size:11.5px; letter-spacing:.04em; background:var(--pop-blue); color:var(--on-pop); border:2px solid var(--fg);}
+.card.pub .tag{background:var(--pop-red);}
+.card:not(.found) .tag{background:transparent; color:var(--muted); border:2px dashed var(--line);}
+.card .num{font-family:var(--font-b); font-weight:900; font-size:13px; letter-spacing:.08em;}
+.card .sec b{font-family:var(--font-b); font-weight:900; color:var(--pop-blue);}
+.card .sec{border-left-color:var(--pop-blue);}
+.mk{font-family:var(--font-b); font-weight:900; font-size:11.5px; padding:2px 10px; border:2px dashed var(--line);}
+.mk.on{background:var(--pop-green); color:var(--on-pop); border:2px solid var(--fg);}
+
+/* ripeness */
+.stg .nowtag{background:var(--pop-red); color:var(--on-pop) !important; font-family:var(--font-b); font-weight:900; font-size:12px; padding:1px 10px; border:2px solid var(--fg); box-shadow:2px 2px 0 var(--fg);}
+
+/* specs + faq */
+.spec td:first-child{font-family:var(--font-b); font-weight:900; font-size:12px; letter-spacing:.08em;}
+.faq summary::after{content:"+"; width:28px; height:28px; border-radius:50%; border:2px solid var(--fg); background:var(--chip); color:var(--fg); box-shadow:2px 2px 0 var(--fg); display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-b); font-weight:900; font-size:18px;}
+.faq details[open] summary::after{background:var(--pop-red); color:var(--on-pop);}
+footer small{font-family:var(--font-b); font-weight:700;}
+@media (prefers-reduced-motion: reduce){ .head .lab{transform:none;} }
+</style>
+
+<style>
+/* Forest Office exhibition theme; the supplied phone and interactions are retained. */
+:root,:root[data-theme="light"]{--bg:#f2efe6;--bg-deep:#e7e1d4;--paper:#fbfaf5;--fg:#151411;--muted:#716b61;--line:#bdb5a6;--accent:#8c6c00;--accent-soft:rgba(242,195,0,.14);--booth:#151411;--booth-fg:#f2efe6;--booth-line:#716b61;--sticker-bg:#f2c300;--sticker-fg:#151411;--pop-blue:#151411;--pop-red:#8c6c00;--pop-green:#46704b;--on-pop:#fbfaf5;--chip:#fbfaf5;--booth-yellow:#f2c300;--font-d:Arial,'Noto Sans JP','Yu Gothic',sans-serif;--font-b:Arial,'Noto Sans JP','Yu Gothic',sans-serif;--font-m:'Courier New','Yu Gothic',monospace}
+:root[data-theme="dark"]{--bg:#151411;--bg-deep:#24221c;--paper:#211f19;--fg:#f2efe6;--muted:#bcb5a6;--line:#605c50;--accent:#f2c300;--accent-soft:rgba(242,195,0,.14);--chip:#29261f;--pop-blue:#655413;--pop-red:#8c6c00;--good:#90bf95}
+html{padding:0;scroll-padding-top:24px}body{padding:0 clamp(20px,6vw,88px);background:linear-gradient(rgba(21,20,17,.018) 1px,transparent 1px),var(--bg);background-size:100% 6px} .wrap{max-width:1280px}
+h1,h2,h3{font-weight:550;letter-spacing:-.04em}.bar{position:relative;margin:0;padding:0;border-bottom:1px solid var(--line);background:transparent}.bar .wrap{padding:18px 0}.logo{font:700 14px var(--font-m);letter-spacing:.07em}.bar nav{gap:24px}.theme{border-width:1px;border-radius:2px}.theme button{border-radius:0;font-size:14px}.bar nav a{font-size:14px;font-weight:500}
+.stage{padding:40px 0 64px;gap:32px;grid-template-columns:minmax(0,380px) minmax(0,1fr)}.intro{gap:24px 60px;margin-bottom:12px}.eyebrow{padding:0;border:0;border-radius:0;color:var(--muted);font-size:12px;letter-spacing:.06em}.eyebrow b{display:none}.intro h1{font-size:clamp(40px,5.8vw,76px);line-height:1.06;letter-spacing:-.065em}.intro h1 em{background:none;color:var(--accent);transform:none;margin:0;padding:0}.tagline{font-size:clamp(18px,2vw,25px);font-weight:650}.stats{border-top:1px solid var(--line);padding-top:12px}.stats strong{font-size:26px;font-weight:550}.stats li{font-size:12px}
+.booth,.line{border-width:1px;border-radius:2px;box-shadow:none}.booth{padding-top:22px;gap:12px}.phone{width:min(100%,270px)}.sticker{top:20px;right:14px;border-radius:2px;transform:none;border:0;box-shadow:none;width:auto;padding:6px 9px;font-size:10px}.sticker b{font-size:18px}.line{padding:24px}.line-head,.hint{border-width:1px;border-style:solid}.line-head{border-top:0;border-left:0;border-right:0}.hint{border-bottom:0;border-left:0;border-right:0}#callState{border-radius:0;font-size:12px} .chip,.eat{border-width:1px;border-radius:2px;font-size:14px;box-shadow:none}.eat:hover:not(:disabled){box-shadow:none;transform:none}.sw{font-size:14px}.m-sys{font-size:14px}.m-them .who{border-radius:0;font-size:12px;font-weight:600}.m-you span{box-shadow:none;border-radius:2px;font-size:14px}.hint .cap{font-size:14px}
+section.s{border-top-width:1px;padding-block:64px}.head .lab{background:none;color:var(--muted);border:0;box-shadow:none;transform:none;padding:0;font-size:12px;letter-spacing:.08em}.head h2{font-size:clamp(28px,4vw,48px);line-height:1.2}.head{gap:18px}.prog{font-size:14px;font-weight:500}.card,.card.found{border:1px solid var(--line);border-radius:0;box-shadow:none;padding:22px}.card.found{border-color:var(--fg)}.card .tag,.card:not(.found) .tag{border:0;border-radius:0;font-size:12px;font-weight:500}.card .num{font-size:14px;font-weight:500;letter-spacing:0}.card .sec{font-size:14px}.card .q{font-size:16px}.mk,.mk.on{border-width:1px;border-radius:0;font-size:12px;font-weight:500}.stg{border-width:1px;border-radius:0}.stg.now{box-shadow:none;border-bottom:4px solid var(--accent)}.stg .sw2{border:0;border-radius:0}.stg p{font-size:14px}.stg .nowtag{border:0;border-radius:0;box-shadow:none}.spec{min-width:0}.spec td{font-size:16px;overflow-wrap:anywhere}.spec td:first-child{font-size:12px;width:32%}.faq details{border-width:1px}.faq summary::after{background:none;box-shadow:none;border:1px solid var(--line);border-radius:0}.faq .a{font-size:16px}
+@media(max-width:880px){.stage{grid-template-columns:minmax(0,1fr)}.intro{gap:24px}.phone{width:min(100%,290px)}.bar-r{gap:12px}.bar nav{gap:12px}.line{min-height:360px}.caption{border-radius:0}}
+@media(max-width:680px){.bar .wrap{align-items:flex-start;flex-wrap:wrap;gap:12px}.bar-r{width:100%;justify-content:space-between}.bar nav{display:flex;flex-wrap:wrap}.intro h1{font-size:clamp(38px,10vw,64px)}.stage{padding-top:28px}.line{padding:16px}.sticker{right:8px;font-size:9px}.rand{margin-left:0}.stats{gap:24px}.duo{gap:40px}.spec td{padding-inline:4px}.stages{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<header class="bar"><div class="wrap"><a class="logo" href="#demo">BANANAPHONE Ω</a><div class="bar-r"><nav aria-label="ページ内ナビゲーション"><a href="#demo">発信</a><a href="#book">電話帳</a><a href="#ripe">熟度</a><a href="#specs">仕様・質問</a></nav><div class="theme" role="group" aria-label="背景色"><button type="button" data-t="light" aria-pressed="false">明</button><button type="button" data-t="dark" aria-pressed="false">暗</button></div></div></div></header>
+
+<main class="wrap">
+  <section class="stage" id="demo">
+    <div class="intro">
+      <div class="i-l">
+        <span class="eyebrow lab"><b></b>ROOM 03 / REASONLESS CONTACT UNIT</span>
+        <h1>BananaPhone <em>Ω</em></h1><p class="tagline">通話に、理由はいらない。</p>
+      </div>
+      <div class="i-r">
+        <p class="lede">番号は何でも構いません。同じ番号は、いつも同じバナナに繋がります。通話中のキーは、そのまま返事になります。</p>
+        <ul class="stats" aria-label="利用状況">
+          <li><strong id="stBook">0/15</strong>電話帳</li>
+          <li><strong id="stCalls">0</strong>通話回数</li>
+          <li><strong id="stEaten">0</strong>食べた本数</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="booth">
+      <div class="sticker" aria-hidden="true"><b>4011</b>BANANAPHONE Ω<br>理由不要</div>
+      <div class="phone" id="phone">
+        <div class="tilt">
+          <svg class="art" viewBox="0 0 300 600" aria-hidden="true">
+            <defs>
+              <clipPath id="bpClip"><path d="M128 56 L172 56 C172 80 250 100 262 170 C270 260 262 420 238 500 C224 545 176 570 160 584 L142 584 C126 570 76 545 62 500 C38 420 30 260 38 170 C50 100 128 80 128 56 Z"/></clipPath>
+              <linearGradient id="bpRound" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stop-color="#000" stop-opacity=".4"/><stop offset=".2" stop-color="#000" stop-opacity="0"/>
+                <stop offset=".38" stop-color="#fff" stop-opacity=".32"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/>
+                <stop offset="1" stop-color="#000" stop-opacity=".44"/>
+              </linearGradient>
+              <linearGradient id="bpTipTop" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6E9B2A"/><stop offset="1" stop-color="#6E9B2A" stop-opacity="0"/></linearGradient>
+              <linearGradient id="bpTipBot" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#6E9B2A"/><stop offset="1" stop-color="#6E9B2A" stop-opacity="0"/></linearGradient>
+            </defs>
+            <path class="b-fill" d="M128 56 L172 56 C172 80 250 100 262 170 C270 260 262 420 238 500 C224 545 176 570 160 584 L142 584 C126 570 76 545 62 500 C38 420 30 260 38 170 C50 100 128 80 128 56 Z"/>
+            <g clip-path="url(#bpClip)">
+              <rect class="tipg" y="40" width="300" height="170" fill="url(#bpTipTop)"/>
+              <rect class="tipg" y="430" width="300" height="170" fill="url(#bpTipBot)"/>
+              <g id="spots"></g>
+              <rect class="brown" width="300" height="600"/>
+              <rect width="300" height="600" fill="url(#bpRound)"/>
+              <path class="rim" d="M128 56 L172 56 C172 80 250 100 262 170 C270 260 262 420 238 500 C224 545 176 570 160 584 L142 584 C126 570 76 545 62 500 C38 420 30 260 38 170 C50 100 128 80 128 56 Z"/>
+            </g>
+            <path d="M128 56 L172 56 C172 80 250 100 262 170 C270 260 262 420 238 500 C224 545 176 570 160 584 L142 584 C126 570 76 545 62 500 C38 420 30 260 38 170 C50 100 128 80 128 56 Z" fill="none" stroke="var(--phone-edge)" stroke-width="3"/>
+            <rect class="stem" x="124" y="16" width="52" height="46" rx="7"/>
+            <ellipse class="tipend" cx="151" cy="585" rx="11" ry="7"/>
+          </svg>
+
+          <div class="screen" id="screen">
+            <div class="r"><span id="sNet">BANANA NET</span><span id="sRipe">熟度 4.4</span></div>
+            <div class="d" id="sDigits">&nbsp;</div>
+            <div class="m" id="sMsg">番号を入力してください</div>
+          </div>
+
+          <div class="pad" role="group" aria-label="ダイヤルキーパッド">
+            <button class="key act" data-key="1" type="button" aria-label="1 観察"><span class="n">1</span><span class="s">観察</span></button>
+            <button class="key" data-key="2" type="button" aria-label="2"><span class="n">2</span><span class="s">ABC</span></button>
+            <button class="key" data-key="3" type="button" aria-label="3"><span class="n">3</span><span class="s">DEF</span></button>
+            <button class="key" data-key="4" type="button" aria-label="4"><span class="n">4</span><span class="s">GHI</span></button>
+            <button class="key" data-key="5" type="button" aria-label="5"><span class="n">5</span><span class="s">JKL</span></button>
+            <button class="key" data-key="6" type="button" aria-label="6"><span class="n">6</span><span class="s">MNO</span></button>
+            <button class="key act" data-key="7" type="button" aria-label="7 把持"><span class="n">7</span><span class="s">把持</span></button>
+            <button class="key" data-key="8" type="button" aria-label="8"><span class="n">8</span><span class="s">TUV</span></button>
+            <button class="key" data-key="9" type="button" aria-label="9"><span class="n">9</span><span class="s">WXYZ</span></button>
+            <button class="key act" data-key="*" type="button" aria-label="アスタリスク 皮むき"><span class="n">*</span><span class="s">皮むき</span></button>
+            <button class="key act" data-key="0" type="button" aria-label="0 沈黙"><span class="n">0</span><span class="s">沈黙</span></button>
+            <button class="key act" data-key="#" type="button" aria-label="シャープ 理由拒否"><span class="n">#</span><span class="s">理由拒否</span></button>
+          </div>
+
+          <div class="calls">
+            <button id="clearBtn" type="button">消去</button>
+            <button id="callBtn" type="button">発信</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="caption" id="caption" aria-hidden="true"></p>
+      <div class="tools">
+        <button class="sw" id="peelSw" type="button" role="switch" aria-checked="false"><span class="track"><span class="knob"></span></span>皮をむく</button>
+        <button class="sw" id="voiceSw" type="button" role="switch" aria-checked="true"><span class="track"><span class="knob"></span></span>声</button>
+        <button class="eat" id="eatBtn" type="button">食べる</button>
+      </div>
+    </div>
+
+    <div class="line">
+      <div class="line-head">
+        <span class="lab" id="callState">STANDBY</span>
+        <canvas id="wave" aria-hidden="true"></canvas>
+        <span class="lab" id="timer">00:00</span>
+      </div>
+      <ol id="log" role="log" aria-live="polite" aria-label="通話ログ"></ol>
+      <div class="hint" id="hint"></div>
+    </div>
+  </section>
+
+  <section class="s" id="book">
+    <div class="head">
+      <span class="lab">Banana Net 電話帳</span>
+      <h2>どの番号も、<br>誰かに繋がっている。</h2>
+      <p>番号の数字から相手が決まります。一度話した相手は、ここに載ります。通話中に「皮むき」を三手目以降で押すと「ひみつ」、「沈黙」を二度送ると「沈黙の絆」が手に入ります。</p>
+    </div>
+    <div class="prog">
+      <span>掲載 <b id="pgFound">0</b>/15</span>
+      <span>ひみつ <b id="pgSec">0</b>/10</span>
+      <span>沈黙の絆 <b id="pgBond">0</b>/10</span>
+      <button class="chip rand hot" id="randBtn" type="button">まだ話していない相手にかける</button>
+    </div>
+    <ul class="grid" id="bookGrid"></ul>
+  </section>
+
+  <section class="s" id="ripe">
+    <div class="head">
+      <span class="lab">追熟チャート</span>
+      <h2>皮は、通話のたびに熟れていく。</h2>
+      <p>通話するたびに本体の熟度が上がり、時間が経っても少しずつ進みます。ステージ8まで進むと発信できなくなるので、食べて新しい一本に替えてください。</p>
+    </div>
+    <ol class="stages" id="stages"></ol>
+  </section>
+
+  <section class="s" id="specs">
+    <div class="head">
+      <span class="lab">Specification / Support</span>
+      <h2>仕様と、よくある質問。</h2>
+      <p>REVISION 06.10.2026 ／ DOCUMENT CLASS: PUBLIC</p>
+    </div>
+    <div class="duo">
+      <div><h3>製品仕様書</h3><div class="tw"><table class="spec">
+        <tr><td>MODEL</td><td>BananaPhone Ω（BP-Ω）</td></tr>
+        <tr><td>CHASSIS</td><td>キャベンディッシュ種 果皮、平均218mm</td></tr>
+        <tr><td>PLU</td><td>4011（検品係の直通番号）</td></tr>
+        <tr><td>POWER SOURCE</td><td>完熟バナナ 1本（交換式ではなく本体そのもの）</td></tr>
+        <tr><td>CHANNEL</td><td>Banana Net Only（他回線非対応）</td></tr>
+        <tr><td>INPUT</td><td>物理キー 12（0–9 / * / #）。通話中は 1・7・*・0・# が返事になります</td></tr>
+        <tr><td>OUTPUT</td><td>音声、および転送された沈黙</td></tr>
+        <tr><td>呼出音</td><td>400Hz を 16Hz で断続（日本の電話網の呼出音に準拠。休止は短縮）</td></tr>
+        <tr><td>耐水性</td><td>IP-Peel（皮がある間のみ有効）</td></tr>
+        <tr><td>保証</td><td>食べるまで</td></tr>
+        <tr><td>推奨保管環境</td><td>常温・追熟中・理由を詮索しない場所</td></tr>
+      </table></div></div>
+      <div><h3>よくある質問</h3><div class="faq">
+      <details name="faq"><summary>なぜバナナで通話ができるのですか？</summary><div class="a">その質問こそが、本製品が不要とするものです。通話は理由の後にではなく、理由の代わりに存在します。</div></details>
+      <details name="faq"><summary>食べてしまった場合、保証は続きますか？</summary><div class="a">保証は「食べるまで」に限り有効です。食べた時点で、保証はその役目を全うしたことになります。画面の「食べる」を押すと、新しい一本に替わります。</div></details>
+      <details name="faq"><summary>他の携帯電話と通話できますか？</summary><div class="a">できません。BananaPhone Ωが接続するのは、Banana Net上の別のバナナだけです。ただし117（時報）、177（予報）、104（番号案内）など、見覚えのある番号にもバナナが出ます。</div></details>
+      <details name="faq"><summary>同じ番号にかけるとどうなりますか？</summary><div class="a">いつも同じ相手に繋がります。相手は番号の数字から決まるので、お気に入りの番号があれば、その相手と何度でも話せます。</div></details>
+      <details name="faq"><summary>皮をむくとどうなりますか？</summary><div class="a">本体が中身の色になり、皮は縁だけに残ります。通話品質への影響は確認されていません。</div></details>
+      <details name="faq"><summary>熟度が上がりすぎて発信できません。</summary><div class="a">ステージ8の本体は発信できません。「食べる」で新しい一本に替えてください。前回から時間が空くと、熟度は少し進んでいます。</div></details></div></div>
+    </div>
+  </section>
+</main>
+
+
+
+<script>
+(function(){
+"use strict";
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+function h(tag, cls, text){ const e = document.createElement(tag); if(cls) e.className = cls; if(text != null) e.textContent = text; return e; }
+
+/* ================= storage ================= */
+const KEY = "bananaphone-omega-v1";
+const S = { ripe: 4.4, calls: 0, eaten: 0, book: {}, ts: 0, voice: true };
+let hadSave = false;
+try{
+  const j = localStorage.getItem(KEY);
+  if(j){ const o = JSON.parse(j); Object.keys(o).forEach(k => { S[k] = o[k]; }); hadSave = true; }
+}catch(e){}
+function save(){ try{ S.ts = Date.now(); localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ================= content ================= */
+const RES = [
+  { id:"fusa", tag:"房の取りまとめ", name:"房主", pitch:.62, rate:.9,
+    quote:"本数は、数えないでください。",
+    open:["こちら、房の取りまとめです。本数は、数えないでください。","房の者が失礼します。ご用件は——いえ、結構です。"],
+    r:{ obs:"ご覧になっている。それで十分です。こちらも、見られている自覚はあります。",
+        hold:"お持ちですか。握りすぎは禁物です。皮が先に答えてしまう。",
+        peel:"皮は、一本ずつむくものです。房ごとは、むけません。",
+        sil:"（房の全員が、同じ長さで黙っている）",
+        ref:"理由を伏せるとは、よい作法です。房に入れてよろしい。",
+        nod:"ええ。ええ。" },
+    secret:"房の端の一本が、いちばん先に熟します。誰にも言っていません。",
+    bond:"沈黙が揃うと、房は一つの生き物になります。今、少しだけ、なりました。",
+    bye:"お話しできて何より。お元気で、ではなく、お熟しで。" },
+  { id:"kawamuki", tag:"皮むき師", name:"皮むき屋", pitch:.8, rate:.95,
+    quote:"むく前の、息が止まる感じが好きだ。",
+    open:["皮むき屋。どこからむく？ 軸、先、それとも話から？"],
+    r:{ obs:"見てるだけで、もう半分むけてるよ。",
+        hold:"持つなら、軸を。真ん中だと潰れる。",
+        peel:"すっ、と。筋は取らなくていい。それは好みだ。",
+        sil:"……いい間だ。むく前の、息の止まる感じ。",
+        ref:"理由なんて、皮と一緒に捨てるもんだ。",
+        nod:"ああ。" },
+    secret:"むき方に正解はない。ただ、上から下へむくと、少しだけ寂しくなる。",
+    bond:"黙って向き合う仕事でね。君は、向いてる。",
+    bye:"切るよ。手が、べたつく前に。" },
+  { id:"tsuijuku", tag:"追熟課", name:"追熟課長", pitch:1.0, rate:1.05, ripen:.3, silRipen:.4,
+    quote:"熟度は、目で測れます。だいたい。",
+    open:["追熟課です。現在、ステージ6の手前。つまり、会議には最適です。"],
+    r:{ obs:"観察ありがとうございます。ステージは目で測れます。だいたい。",
+        hold:"保持ですね。温度は十四度前後、湿度九割。……すみません、止まりませんでした。",
+        peel:"未熟な状態でのむき作業は、推奨しておりません。",
+        sil:"沈黙は、時間の経過としてカウントされます。熟度が、進みました。",
+        ref:"理由なき追熟。最も効率の良い工程です。",
+        nod:"承知しました。" },
+    secret:"本当は、ステージ8を少し羨ましく思っています。終わりがあるのは、いいことです。",
+    bond:"あなたとの沈黙は、静置の条件を満たしていました。ありがとうございます。",
+    bye:"では、次の熟度でお会いしましょう。" },
+  { id:"kokuten", tag:"砂糖斑（シュガースポット）係", name:"黒点さん", pitch:1.35, rate:.95,
+    quote:"茶色いのは、甘いの印。",
+    open:["あ〜い、黒点です〜。わたし、点でできてるの。"],
+    r:{ obs:"見て見て、数えないでね。数えると、増える。",
+        hold:"持ち方、やさしいね〜。点がちょっとだけ濃くなった。",
+        peel:"むいちゃう？ 中はね、ぜんぶ、うれしい味。",
+        sil:"ふふ。黙ってる人のとなりは、点がよく育つの。",
+        ref:"理由、いらない、いらない。茶色は、甘いの印。それだけ。",
+        nod:"うんうん〜。" },
+    secret:"点はね、さびしい日に増えるって、誰かが言ってた。わたしは、嬉しい日にも増えるって、知ってる。",
+    bond:"今日は、点が三つ増えました。あなたのぶん。",
+    bye:"またね〜。熟れすぎる前に、おいで〜。" },
+  { id:"senchou", tag:"輸送船 第四バナナ丸", name:"船長", pitch:.55, rate:.88, ripen:-.2,
+    quote:"電波が悪い。ずっと沖だ。",
+    open:["こちら第四バナナ丸。エクアドル出港、横浜入港まで、あと……ずっと沖です。電波が悪い。"],
+    r:{ obs:"水平線が見えるか？ こっちは、それしかない。",
+        hold:"舵を握っているところだ。切らないでくれ、波が高い。",
+        peel:"皮むき？ 船倉は十三度半。むく気になる温度じゃない。",
+        sil:"……いま、波の音だけ届いてるはずだ。それが、うちの沈黙。",
+        ref:"理由か。航海に理由はあるが、乗組員に理由は聞かん。",
+        nod:"了解。" },
+    secret:"積み荷が全部青いうちが、いちばん静かで好きだ。熟すと、船が騒がしくなる。",
+    bond:"波の音を、一緒に聞いてくれたな。入港したら、礼を言う。",
+    bye:"電波が切れる。……ああ、またかけてくれ。" },
+  { id:"riyuu", tag:"理由係", name:"理由係", pitch:1.2, rate:1.1,
+    quote:"理由を——あっ、結構です。",
+    open:["理由係です。ご用件の理由を——あっ、いえ、結構です、失礼しました。"],
+    r:{ obs:"ご覧になっている理由は——いえ、お聞きしません。",
+        hold:"お持ちになった理由は、えっと、なんでもないです。",
+        peel:"皮をむく理由が——ない、ですよね。大変失礼しました。",
+        sil:"（理由を飲み込んでいる音）",
+        ref:"それです。それです！ これを待っていました。理由係、ここで失業いたします。",
+        nod:"はい、はい、すみません。" },
+    secret:"理由係は、いちども理由を聞けたことがありません。聞きたくなる気持ちだけ、毎日あります。",
+    bond:"あなたが黙ってくれたので、わたしも、初めて黙れました。",
+    bye:"それでは。理由は、またいつか、聞かないことにします。" },
+  { id:"kokan", tag:"沈黙交換手", name:"交換手", pitch:.95, rate:.8, silMs:900,
+    quote:"……お繋ぎします。……繋がっています。",
+    open:["……お繋ぎします。……繋がっています。……以上です。"],
+    r:{ obs:"……（見ているのが、こちらにも見えます）",
+        hold:"……（お待ちください、の意味の沈黙）",
+        peel:"……（皮の音だけが、回線を通過しました）",
+        sil:"（沈黙、無事に転送されました）",
+        ref:"……（深くうなずく気配）",
+        nod:"……。" },
+    secret:"（交換手は、一度も声を出したことがありません。この文字は、あなたの内側で鳴っています）",
+    bond:"…………（ありがとう、の長さの沈黙）",
+    bye:"……お切りします。……切れていません。……切れました。" },
+  { id:"ippon", tag:"房から離れた一本", name:"はぐれた一本", pitch:1.15, rate:.92,
+    quote:"そっちは今、何本目？",
+    open:["もしもし。……房から、はぐれちゃって。そっちは今、何本目？"],
+    r:{ obs:"見つけてくれたの？ 机の上、いちばん端にいる。",
+        hold:"持ってくれるの？ あったかい手だ。すこし、熟れる。",
+        peel:"むいてもいいよ。ひとりで食べられるのは、ひとりぶんだけ、だけど。",
+        sil:"……いいよ、黙ってて。隣にいてくれるだけで、数が増える。",
+        ref:"理由は、ないんだ。はぐれた理由も、いま電話してる理由も。",
+        nod:"うん。" },
+    secret:"本当は、はぐれたんじゃなくて、自分で離れた。ちょっとだけ、ひとりで熟してみたくて。",
+    bond:"二人で黙ると、二本ぶんだね。",
+    bye:"ありがとう。……また、かけて。何本目でもいいから。" },
+  { id:"jukusugi", tag:"熟れすぎ", name:"とろとろ", pitch:.75, rate:.8, ripen:.4,
+    quote:"バナナブレッドになりたい。",
+    open:["あー……もう、だめだ。とろとろ。バナナブレッドになりたい。"],
+    r:{ obs:"見るな見るな。茶色いのは、人生の味。",
+        hold:"持たないで。崩れる。いや、持って。崩れても、いい。",
+        peel:"むくなら、いまだ。皮と実の境目が、もう、ない。",
+        sil:"……いい沈黙だ。焼き上がる前の、オーブンの沈黙だ。",
+        ref:"理由？ いまさら。焼かれる理由もないよ、おれは。",
+        nod:"ああ……ああ。" },
+    secret:"夢は、ふんわり焼かれて、誰かの朝ごはんになること。それだけは、理由がある。",
+    bond:"あんたとの沈黙、ちょうど百八十度だった。",
+    bye:"焼き加減、見に来てくれよな。" },
+  { id:"aoi", tag:"未熟", name:"青いの", pitch:1.1, rate:1.0, ripen:-.3,
+    quote:"まだ早い。……あ、癖で。",
+    open:["まだ早い。……あ、ごめん、癖で。青いんだ、ぼく。"],
+    r:{ obs:"見ても、黄色くはならないよ。まだ。",
+        hold:"硬いでしょ。握ると、ちょっと押し返してくる。",
+        peel:"むいちゃだめ。……いや、むいても、渋いだけ。",
+        sil:"……しずかだ。青いうちの沈黙は、ちょっとだけ、未来の味がする。",
+        ref:"理由、あとで考える。いまは、まだ早い。",
+        nod:"うん、うん、まだ。" },
+    secret:"ほんとは、熟したくない。熟したら、食べられちゃうから。でも、熟したい。両方、本当。",
+    bond:"いっしょに、待ってくれてありがとう。待つの、ひとりだと長いんだ。",
+    bye:"また、少し黄色くなったら、かけて。" }
+];
+
+function jihouLines(){
+  const d = new Date(), hr = d.getHours(), mi = d.getMinutes(), se = Math.floor(d.getSeconds() / 10) * 10;
+  const ap = hr < 12 ? "午前" : "午後", h12 = hr % 12 === 0 ? 12 : hr % 12;
+  return ["ただいまの熟度時報を、お知らせします。",
+    ap + h12 + "時" + mi + "分" + se + "秒、熟度 ステージ" + S.ripe.toFixed(1) + " をお知らせします。",
+    "ピッ、ピッ、ピッ、ポーン。"];
+}
+const SPECIAL = [
+  { id:"jihou", nums:["117"], tag:"時報", name:"熟度時報", pitch:1.05, rate:.95, quote:"ただいまの熟度を、お知らせします。", auto:jihouLines },
+  { id:"yohou", nums:["177"], tag:"予報", name:"追熟予報", pitch:1.0, rate:.95, quote:"傘は不要です。皮が、あります。",
+    auto:() => ["本日の追熟予報です。","全国的に、ゆっくり熟れるでしょう。","茶色い点は、夕方にかけて、ところにより増える見込みです。","傘は不要です。皮が、あります。"] },
+  { id:"annai", nums:["104"], tag:"番号案内", name:"番号案内", pitch:1.1, rate:.95, quote:"お探しにならなくても、もう繋がっています。",
+    auto:() => ["番号案内です。お探しの番号をどうぞ——","……お探しにならなくても、その番号は、もうバナナに繋がっています。","番号案内は、これで終了です。ご利用ありがとうございました。"] },
+  { id:"kenpin", nums:["4011"], tag:"検品", name:"検品係", pitch:.85, rate:1.0, quote:"シールを貼るのは、毎回、初めてです。",
+    auto:() => ["PLUコード四〇一一、検品係です。","バナナにシールを貼るのは、毎回、初めてです。","あなたは、この番号にかけた最初の人ではありません。ですが、最初の人のように扱います。"] },
+  { id:"kinkyu", nums:["110","119"], tag:"緊急ではない回線", name:"緊急ではない回線", pitch:.7, rate:1.0, quote:"どちらでも、バナナが駆けつけます。",
+    auto:() => ["こちらは、緊急かどうかを聞かない回線です。","事件ですか。事故ですか。——いえ、聞きません。","どちらでも、バナナが駆けつけます。熟度が、足りていれば。"] }
+];
+const ALL = RES.concat(SPECIAL);
+const SPECIAL_NUM = {};
+SPECIAL.forEach(s => s.nums.forEach(n => { SPECIAL_NUM[n] = s; }));
+
+const KIND = { "1":"obs", "7":"hold", "*":"peel", "0":"sil", "#":"ref" };
+const LABEL = { obs:"観察", hold:"把持", peel:"皮をむく", sil:"沈黙を送る", ref:"理由を拒否", nod:"相づち" };
+const AGAIN = {
+  obs:"（さっきと同じものを、もう一度見ている。相手は、少し嬉しそうだ）",
+  hold:"（持ち直した。相手の呼吸が、少しゆるんだ）",
+  peel:"（むいたものは、もう戻らない。相手もそれを知っている）",
+  sil:"（二度目の沈黙。一度目より、少しだけ長い）",
+  ref:"（理由は、また伏せられた。相手はうなずいた）"
+};
+const NODS = ["うん。","ええ。","……そう。","なるほど。","うんうん。"];
+
+function fnv(s){ let x = 2166136261 >>> 0; for(let i = 0; i < s.length; i++){ x ^= s.charCodeAt(i); x = Math.imul(x, 16777619) >>> 0; } return x >>> 0; }
+function resolve(d){ return SPECIAL_NUM[d] || RES[(fnv(d) >>> 7) % RES.length]; }
+
+/* ================= audio ================= */
+let AC = null;
+function ensureAudio(){
+  try{
+    if(!AC){ const C = window.AudioContext || window.webkitAudioContext; if(C) AC = new C(); }
+    if(AC && AC.state === "suspended") AC.resume();
+  }catch(e){ AC = null; }
+}
+function tones(freqs, t0, dur, vol){
+  if(!AC) return;
+  const g = AC.createGain();
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);
+  g.gain.setValueAtTime(vol, t0 + Math.max(0.013, dur - 0.03));
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  g.connect(AC.destination);
+  freqs.forEach(f => { const o = AC.createOscillator(); o.type = "sine"; o.frequency.value = f; o.connect(g); o.start(t0); o.stop(t0 + dur + 0.03); });
+}
+const DTMF = { "1":[697,1209],"2":[697,1336],"3":[697,1477],"4":[770,1209],"5":[770,1336],"6":[770,1477],"7":[852,1209],"8":[852,1336],"9":[852,1477],"*":[941,1209],"0":[941,1336],"#":[941,1477] };
+function keyTone(k){ if(AC && DTMF[k]) tones(DTMF[k], AC.currentTime, 0.11, 0.05); }
+function ringOnce(t0, dur){
+  if(!AC) return;
+  const o = AC.createOscillator(), lfo = AC.createOscillator(), lg = AC.createGain(), g = AC.createGain(), env = AC.createGain();
+  o.frequency.value = 400; lfo.frequency.value = 16; lg.gain.value = 0.5; g.gain.value = 0.5;
+  lfo.connect(lg); lg.connect(g.gain); o.connect(g); g.connect(env); env.connect(AC.destination);
+  env.gain.setValueAtTime(0, t0); env.gain.linearRampToValueAtTime(0.09, t0 + 0.03);
+  env.gain.setValueAtTime(0.09, t0 + dur - 0.04); env.gain.linearRampToValueAtTime(0, t0 + dur);
+  o.start(t0); lfo.start(t0); o.stop(t0 + dur + 0.03); lfo.stop(t0 + dur + 0.03);
+}
+function pickup(){ if(AC) tones([880], AC.currentTime, 0.07, 0.05); }
+function busy(){ if(!AC) return; const t = AC.currentTime; tones([400], t, 0.28, 0.05); tones([400], t + 0.56, 0.28, 0.05); }
+
+/* ================= speech ================= */
+let jaVoice = null;
+function refreshVoice(){
+  try{ const vs = speechSynthesis.getVoices(); jaVoice = vs.find(v => /^ja/i.test(v.lang)) || null; }catch(e){}
+}
+try{ if("speechSynthesis" in window){ refreshVoice(); speechSynthesis.addEventListener("voiceschanged", refreshVoice); } }catch(e){}
+function cancelSpeech(){ try{ if("speechSynthesis" in window) speechSynthesis.cancel(); }catch(e){} }
+function speak(text, r){
+  if(!S.voice || !("speechSynthesis" in window)) return;
+  try{
+    const clean = text.replace(/（[^）]*）/g, "").replace(/[…]+/g, "、").replace(/[、。\s]+$/g, "").trim();
+    if(!clean || /^[、。\s]+$/.test(clean)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(clean);
+    u.lang = "ja-JP"; if(jaVoice) u.voice = jaVoice;
+    u.pitch = r.pitch || 1; u.rate = r.rate || 1;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ================= skin ================= */
+const STOPS = [[134,168,58],[165,186,58],[196,200,56],[222,206,44],[238,206,30],[245,205,24],[240,190,20],[150,104,24]];
+function skinRGB(r){
+  const x = clamp(r, 1, 8) - 1, i = Math.min(6, Math.floor(x)), f = x - i, a = STOPS[i], b = STOPS[i + 1];
+  return a.map((v, k) => Math.round(v + (b[k] - v) * f));
+}
+const rgb = c => "rgb(" + c.join(",") + ")";
+const phone = $("#phone");
+const spotsG = $("#spots");
+const SPOTS = [];
+(function(){
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const NS = "http://www.w3.org/2000/svg";
+  for(let i = 0; i < 46; i++){
+    const side = rnd() < .5 ? -1 : 1, y = 90 + rnd() * 440;
+    const edge = 52 + rnd() * 54, x = 150 + side * edge * (y < 150 ? .7 : 1);
+    const c = document.createElementNS(NS, "ellipse");
+    c.setAttribute("cx", x.toFixed(1)); c.setAttribute("cy", y.toFixed(1));
+    c.setAttribute("rx", (1.4 + rnd() * 3.2).toFixed(1)); c.setAttribute("ry", (1.6 + rnd() * 4).toFixed(1));
+    c.setAttribute("fill", "#4A2E08"); c.setAttribute("opacity", "0");
+    spotsG.appendChild(c); SPOTS.push({ el: c, t: 6.1 + rnd() * 1.5 });
+  }
+})();
+let peeled = false;
+function renderSkin(){
+  const real = skinRGB(S.ripe), dark = real.map(v => Math.round(v * .7));
+  phone.style.setProperty("--skin-real", rgb(real));
+  phone.style.setProperty("--skin", peeled ? "#FFF0B8" : rgb(real));
+  phone.style.setProperty("--tips", String(clamp((6 - S.ripe) / 2, 0, 1) * .85));
+  phone.style.setProperty("--brown", String(clamp((S.ripe - 7) * .55, 0, .55)));
+  SPOTS.forEach(s => s.el.setAttribute("opacity", String(clamp((S.ripe - s.t) * 1.6, 0, .85))));
+  $("#sRipe").textContent = "熟度 " + S.ripe.toFixed(1);
+  void dark;
+}
+
+/* ================= state + screen ================= */
+const st = { mode:"idle", digits:"", res:null, id:0, depth:0, max:5, used:{}, sil:0, t0:0, timer:null, typing:null, skip:null, busy:false, locked:false, ringT:null };
+const sDigits = $("#sDigits"), sMsg = $("#sMsg"), sNet = $("#sNet"), screenEl = $("#screen");
+const callBtn = $("#callBtn"), eatBtn = $("#eatBtn"), logEl = $("#log"), hintEl = $("#hint");
+const MAXD = 12;
+const capEl = $("#caption");
+function msg(t){ sMsg.textContent = t; }
+function drawDigits(){ sDigits.textContent = st.digits || " "; }
+function scrollLog(){ logEl.scrollTop = logEl.scrollHeight; }
+function fmt(s){ const m = Math.floor(s / 60), x = s % 60; return (m < 10 ? "0" : "") + m + ":" + (x < 10 ? "0" : "") + x; }
+
+function sys(text, cls){ const li = h("li", "m-sys" + (cls ? " " + cls : ""), text); logEl.appendChild(li); scrollLog(); return li; }
+function addYou(key, kind){
+  const li = h("li", "m-you"), sp = h("span"), b = h("b", "", key);
+  sp.appendChild(b); sp.appendChild(document.createTextNode(LABEL[kind]));
+  li.appendChild(sp); logEl.appendChild(li); scrollLog();
+}
+
+/* wave */
+const cv = $("#wave"), cx = cv.getContext("2d");
+let lv = 0, tg = 0, ph = 0, raf = 0;
+const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+function sizeCv(){
+  const d = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, hh = cv.clientHeight;
+  if(!w) return; cv.width = Math.round(w * d); cv.height = Math.round(hh * d); cx.setTransform(d, 0, 0, d, 0, 0);
+}
+function drawWave(){
+  const w = cv.clientWidth, hh = cv.clientHeight; if(!w) return;
+  cx.clearRect(0, 0, w, hh); cx.strokeStyle = getComputedStyle(cv).color; cx.lineWidth = 2; cx.lineJoin = "round"; cx.beginPath();
+  for(let x = 0; x <= w; x += 3){
+    const t = x / w, env = Math.sin(Math.PI * t);
+    const a = lv * env * (.55 * Math.sin(t * 22 + ph) + .35 * Math.sin(t * 47 - ph * 1.7) + .2 * Math.sin(t * 9 + ph * .6));
+    const y = hh / 2 + a * hh * .42;
+    if(x) cx.lineTo(x, y); else cx.moveTo(x, y);
+  }
+  cx.stroke();
+}
+function loop(){
+  lv += (tg - lv) * .12; if(!reduce) ph += .22;
+  drawWave();
+  if(st.mode !== "idle" || lv > .01) raf = requestAnimationFrame(loop); else { raf = 0; lv = 0; drawWave(); }
+}
+function kick(){ if(!raf) raf = requestAnimationFrame(loop); }
+sizeCv(); drawWave();
+if("ResizeObserver" in window) new ResizeObserver(() => { sizeCv(); drawWave(); }).observe(cv);
+
+/* typed line */
+function say(text, r, cls){
+  return new Promise(resolve => {
+    const li = h("li", "m-them" + (cls ? " " + cls : ""));
+    const who = h("span", "who", r.name), tx = h("span", "tx", "");
+    li.appendChild(who); li.appendChild(tx); logEl.appendChild(li); scrollLog();
+    let i = 0; st.busy = true; tg = 1; kick();
+    capEl.textContent = ""; const capWho = h("b", "", r.name), capTx = document.createTextNode(""); capEl.appendChild(capWho); capEl.appendChild(capTx);
+    speak(text, r);
+    const fin = () => {
+      if(st.typing){ clearInterval(st.typing); st.typing = null; }
+      tx.textContent = text; capTx.nodeValue = text; st.busy = false; st.skip = null; tg = 0; scrollLog(); resolve();
+    };
+    st.skip = fin;
+    st.typing = setInterval(() => { i++; tx.textContent = text.slice(0, i); capTx.nodeValue = tx.textContent; scrollLog(); if(i >= text.length) fin(); }, 34);
+  });
+}
+function stopTyping(){ if(st.typing){ clearInterval(st.typing); st.typing = null; } st.busy = false; st.skip = null; tg = 0; }
+
+/* hint row */
+function renderHint(){
+  hintEl.textContent = "";
+  if(st.mode === "live" && st.res && !st.res.auto){
+    hintEl.appendChild(h("span", "cap", "返事:"));
+    [["1","観察"],["7","把持"],["*","皮むき"],["0","沈黙"],["#","理由拒否"]].forEach(p => {
+      const b = h("button", "chip"); b.type = "button"; b.dataset.act = p[0];
+      b.appendChild(h("i", "", p[0])); b.appendChild(document.createTextNode(p[1])); hintEl.appendChild(b);
+    });
+    hintEl.appendChild(h("span", "cap", "他のキーは相づち"));
+  } else if(st.mode === "idle"){
+    hintEl.appendChild(h("span", "cap", "かけてみる:"));
+    [["117","時報"],["177","予報"],["4011","検品"]].forEach(p => {
+      const b = h("button", "chip"); b.type = "button"; b.dataset.num = p[0];
+      b.appendChild(h("i", "", p[0])); b.appendChild(document.createTextNode(p[1])); hintEl.appendChild(b);
+    });
+    const r = h("button", "chip hot", "未接続の誰か"); r.type = "button"; r.dataset.rand = "1"; hintEl.appendChild(r);
+  } else {
+    hintEl.appendChild(h("span", "cap", st.mode === "dialing" ? "呼出中です。" : "お聞きください。"));
+  }
+}
+
+/* ================= call flow ================= */
+function setDigits(n){
+  if(st.mode !== "idle") return;
+  st.digits = n.slice(0, MAXD); drawDigits(); msg("発信できます");
+}
+function pressKey(k){
+  ensureAudio();
+  const kb = $('.key[data-key="' + (k === "*" ? "\\*" : k) + '"]'); // visual press
+  if(kb){ kb.classList.add("on"); setTimeout(() => kb.classList.remove("on"), 120); }
+  if(st.mode === "live"){ act(k); return; }
+  if(st.mode === "dialing") return;
+  if(st.digits.length >= MAXD) return;
+  st.digits += k; keyTone(k); drawDigits(); msg("発信できます");
+}
+function clearDigit(){ ensureAudio(); if(st.mode !== "idle") return; st.digits = st.digits.slice(0, -1); drawDigits(); msg(st.digits ? "発信できます" : "番号を入力してください"); }
+
+function dial(){
+  ensureAudio();
+  if(st.mode === "live" || st.mode === "dialing"){ hang(); return; }
+  if(!st.digits){ msg("番号がありません"); return; }
+  if(S.ripe >= 7.6){
+    msg("熟度オーバー：要交換"); sys("熟度がステージ8です。「食べる」で新しい一本に替えてください。");
+    eatBtn.classList.remove("pulse"); void eatBtn.offsetWidth; eatBtn.classList.add("pulse"); return;
+  }
+  const id = ++st.id;
+  st.mode = "dialing"; st.res = null; st.depth = 0; st.used = {}; st.sil = 0; st.locked = false;
+  st.max = 4 + Math.floor(Math.random() * 3);
+  callBtn.textContent = "終話"; callBtn.classList.add("end");
+  phone.classList.add("ringing"); sNet.textContent = "CALLING"; msg("呼出中…");
+  $("#callState").textContent = "DIALING " + st.digits; $("#timer").textContent = "00:00";
+  renderHint(); kick();
+  const rings = Math.random() < .5 ? 1 : 2;
+  if(AC){ const t = AC.currentTime + .05; for(let i = 0; i < rings; i++) ringOnce(t + i * 1.5, .95); }
+  st.ringT = setTimeout(() => connect(id), rings * 1500 + 150);
+}
+
+async function connect(id){
+  if(st.id !== id || st.mode !== "dialing") return;
+  const r = resolve(st.digits);
+  st.res = r; st.mode = "live"; st.t0 = Date.now();
+  phone.classList.remove("ringing"); phone.classList.add("live"); screenEl.classList.add("live");
+  sNet.textContent = "LIVE"; msg(r.auto ? "通話中" : "通話中：キーで返事");
+  $("#callState").textContent = "LIVE ・ " + r.name; $(".line").classList.add("is-live"); pickup();
+  st.timer = setInterval(() => { $("#timer").textContent = fmt(Math.round((Date.now() - st.t0) / 1000)); }, 500);
+  S.calls++;
+  S.ripe = clamp(S.ripe + .25 + (r.ripen || 0) + (r.auto ? -.1 : 0), 1, 8);
+  const b = S.book[r.id] || (S.book[r.id] = { n: 0, first: st.digits, secret: false, bond: false });
+  const fresh = b.n === 0; b.n++;
+  renderSkin(); renderAll(); save(); renderHint();
+  if(fresh) sys("電話帳に追加：" + r.name, "ok");
+  const alive = () => st.id === id && st.mode === "live";
+  if(r.auto){
+    const lines = r.auto();
+    for(const l of lines){ await say(l, r); if(!alive()) return; await wait(850); if(!alive()) return; }
+    hang(); return;
+  }
+  await say(pick(r.open), r);
+  if(!alive()) return;
+  renderHint();
+}
+
+async function act(key){
+  if(st.mode !== "live" || !st.res || st.res.auto) return;
+  if(st.busy){ if(st.skip) st.skip(); return; }
+  if(st.locked) return;
+  const id = st.id, r = st.res, kind = KIND[key] || "nod", b = S.book[r.id];
+  const alive = () => st.id === id && st.mode === "live";
+  keyTone(key); st.locked = true; st.depth++;
+  addYou(key, kind);
+  let text, cls = "", note = "";
+  if(kind === "sil") st.sil++;
+  if(kind === "peel" && st.depth >= 3 && !b.secret){ text = r.secret; b.secret = true; cls = "unlock"; note = "電話帳に「ひみつ」を記録しました"; }
+  else if(kind === "sil" && st.sil >= 2 && !b.bond){ text = r.bond; b.bond = true; cls = "unlock"; note = "電話帳に「沈黙の絆」を記録しました"; }
+  else if(kind === "nod"){ text = st.used.nod ? pick(NODS) : r.r.nod; st.used.nod = true; }
+  else if(!st.used[kind]){ text = r.r[kind]; st.used[kind] = true; }
+  else { text = AGAIN[kind]; }
+  if(kind === "sil"){
+    const ms = r.silMs || 2000;
+    msg("沈黙転送中…"); tg = 0;
+    const li = sys("沈黙を転送中 …");
+    await wait(ms); if(!alive()) return;
+    li.textContent = "沈黙を転送しました（" + (ms / 1000).toFixed(1) + "秒）";
+    if(r.silRipen){ S.ripe = clamp(S.ripe + r.silRipen, 1, 8); renderSkin(); }
+    msg("通話中：キーで返事");
+  }
+  await say(text, r, cls); if(!alive()) return;
+  if(note){ sys(note, "ok"); }
+  save(); renderAll();
+  if(st.depth >= st.max){
+    await wait(650); if(!alive()) return;
+    await say(r.bye, r); if(!alive()) return;
+    await wait(700); if(!alive()) return;
+    hang(); return;
+  }
+  st.locked = false; msg("通話中：キーで返事");
+}
+
+function hang(){
+  if(st.mode === "idle") return;
+  const wasLive = st.mode === "live", r = st.res;
+  clearTimeout(st.ringT); clearInterval(st.timer); st.timer = null;
+  st.id++; stopTyping(); cancelSpeech();
+  const dur = Math.round((Date.now() - st.t0) / 1000);
+  st.mode = "idle"; st.locked = false;
+  phone.classList.remove("ringing", "live"); screenEl.classList.remove("live");
+  callBtn.textContent = "発信"; callBtn.classList.remove("end");
+  sNet.textContent = "BANANA NET"; msg("通話終了"); $("#callState").textContent = "STANDBY"; $(".line").classList.remove("is-live");
+  busy(); setTimeout(() => { if(st.mode === "idle") capEl.textContent = ""; }, 2500);
+  if(wasLive && r){
+    const b = S.book[r.id];
+    let t = "通話終了 " + fmt(dur) + "／" + r.name;
+    if(!r.auto) t += "／沈黙 " + st.sil + "回";
+    if(!r.auto && b && b.secret) t += "／ひみつ ✓";
+    sys(t);
+    if(S.ripe >= 7.6) sys("熟度がステージ8に達しました。次の発信の前に、食べてください。");
+  } else sys("発信をやめました");
+  save(); renderAll(); renderHint(); kick();
+  setTimeout(() => { if(st.mode === "idle"){ st.digits = ""; drawDigits(); msg("番号を入力してください"); } }, 900);
+}
+
+/* ================= eat / toggles ================= */
+function eat(){
+  if(st.mode !== "idle") return;
+  const r = S.ripe;
+  const t = r < 3.5 ? "まだ青い。渋い。……ごちそうさま。" : r < 6 ? "ちょうどいい。……ごちそうさま。" : r < 7.6 ? "甘い。茶色い点まで、ぜんぶ。ごちそうさま。" : "限界だった。食べてもらえて、よかった。ごちそうさま。";
+  S.eaten++; S.ripe = 3.0; renderSkin(); renderAll(); save();
+  sys(t); sys("新しい一本です（熟度 3.0）。累計 " + S.eaten + " 本。保証は、食べるまで。", "ok");
+  msg("新しい一本"); setTimeout(() => { if(st.mode === "idle") msg(st.digits ? "発信できます" : "番号を入力してください"); }, 1400);
+}
+function setSwitch(btn, v){ btn.setAttribute("aria-checked", String(v)); }
+$("#peelSw").addEventListener("click", () => { peeled = !peeled; phone.classList.toggle("peeled", peeled); setSwitch($("#peelSw"), peeled); renderSkin(); });
+$("#voiceSw").addEventListener("click", () => {
+  S.voice = !S.voice; setSwitch($("#voiceSw"), S.voice); if(!S.voice) cancelSpeech(); save();
+});
+eatBtn.addEventListener("click", eat);
+
+/* ================= directory + chart ================= */
+const bookGrid = $("#bookGrid");
+function renderBook(){
+  bookGrid.textContent = "";
+  let found = 0, sec = 0, bond = 0;
+  ALL.forEach(r => {
+    const b = S.book[r.id], f = !!b && b.n > 0, isRes = !r.auto;
+    if(f) found++; if(f && b.secret) sec++; if(f && b.bond) bond++;
+    const li = h("li", "card" + (f ? " found" : "") + (isRes ? "" : " pub"));
+    li.appendChild(h("span", "tag", f ? r.tag : "未接続"));
+    li.appendChild(h("h3", "", f ? r.name : "？？？"));
+    li.appendChild(h("div", "num", isRes ? (f ? "初回 " + b.first : "番号不定") : "公開番号 " + r.nums.join(" / ")));
+    li.appendChild(h("p", "q", f ? "「" + r.quote + "」" : (isRes ? "どれかの番号が、ここに繋がっています。" : "公開されている番号にかけると繋がります。")));
+    if(f && isRes && b.secret){ const s = h("p", "sec"); s.appendChild(h("b", "", "ひみつ")); s.appendChild(document.createTextNode(r.secret)); li.appendChild(s); }
+    if(f && isRes && b.bond){ const s = h("p", "sec"); s.appendChild(h("b", "", "沈黙の絆")); s.appendChild(document.createTextNode(r.bond)); li.appendChild(s); }
+    if(isRes){ const m = h("div", "marks"); m.appendChild(h("span", "mk" + (f && b.secret ? " on" : ""), "ひみつ")); m.appendChild(h("span", "mk" + (f && b.bond ? " on" : ""), "沈黙の絆")); li.appendChild(m); }
+    const num = f ? (isRes ? b.first : r.nums[0]) : (isRes ? null : r.nums[0]);
+    if(num){ const c = h("button", "chip", num + " にかける"); c.type = "button"; c.dataset.num = num; li.appendChild(c); }
+    bookGrid.appendChild(li);
+  });
+  $("#pgFound").textContent = found; $("#pgSec").textContent = sec; $("#pgBond").textContent = bond;
+  $("#stBook").textContent = found + "/15";
+}
+const STAGE_TX = ["全体が緑。まだ早い。","緑に、わずかな黄。","黄と緑が半々。","黄が優勢。先端は緑。","黄色。首と先端がまだ緑。","全体が黄色。食べ頃。","茶色い点が出る。いちばん甘い。","全体が茶色。要交換で、発信不可。"];
+const stagesEl = $("#stages");
+(function buildStages(){
+  for(let i = 1; i <= 8; i++){
+    const li = h("li", "stg"); li.dataset.s = i;
+    const sw = h("div", "sw2"); sw.style.background = rgb(skinRGB(i));
+    if(i === 7){ [[18,14,5],[44,30,4],[70,12,6],[30,40,3],[82,36,5],[58,44,3]].forEach(p => { const u = h("u"); u.style.left = p[0] + "%"; u.style.top = p[1] + "px"; u.style.width = p[2] + "px"; u.style.height = (p[2] + 2) + "px"; sw.appendChild(u); }); }
+    if(i === 5){ sw.style.backgroundImage = "linear-gradient(90deg, #7FA83A 0 12%, transparent 12% 88%, #7FA83A 88%)"; }
+    li.appendChild(sw); li.appendChild(h("div", "no", String(i))); li.appendChild(h("p", "", STAGE_TX[i - 1]));
+    stagesEl.appendChild(li);
+  }
+})();
+function renderStages(){
+  const cur = S.ripe >= 7.6 ? 8 : clamp(Math.floor(S.ripe + .0001), 1, 7);
+  $$(".stg", stagesEl).forEach(li => {
+    const on = Number(li.dataset.s) === cur; li.classList.toggle("now", on);
+    const old = $(".nowtag", li); if(old) old.remove();
+    if(on) li.appendChild(h("span", "nowtag", "いま " + S.ripe.toFixed(1)));
+  });
+}
+function renderAll(){ renderBook(); renderStages(); $("#stCalls").textContent = S.calls; $("#stEaten").textContent = S.eaten; }
+
+/* ================= directory actions ================= */
+function randomUnmet(){
+  const unmet = RES.filter(r => !(S.book[r.id] && S.book[r.id].n > 0));
+  const target = unmet.length ? pick(unmet) : pick(RES);
+  for(let k = 0; k < 4000; k++){
+    const len = 8 + Math.floor(Math.random() * 3); let d = "0";
+    while(d.length < len) d += Math.floor(Math.random() * 10);
+    if(!SPECIAL_NUM[d] && resolve(d) === target) return d;
+  }
+  return "0312345678";
+}
+function goDial(n){
+  if(st.mode !== "idle") return;
+  setDigits(n); ensureAudio();
+  const el = $("#demo"); const top = el.getBoundingClientRect().top + window.scrollY - 70;
+  if(window.parent !== window) window.parent.postMessage({type:"banana-phone-scroll",top:Math.max(0,top)},location.origin); else window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("button"); if(!b) return;
+  if(b.dataset.act){ ensureAudio(); act(b.dataset.act); return; }
+  if(b.dataset.num){ goDial(b.dataset.num); return; }
+  if(b.dataset.rand || b.id === "randBtn"){ goDial(randomUnmet()); return; }
+});
+
+/* ================= keypad + keyboard ================= */
+$$(".key").forEach(k => k.addEventListener("click", () => pressKey(k.dataset.key)));
+$("#clearBtn").addEventListener("click", clearDigit);
+callBtn.addEventListener("click", dial);
+document.addEventListener("keydown", e => {
+  if(e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target, tag = t && t.tagName;
+  if(tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;
+  if(/^[0-9*#]$/.test(e.key)){ pressKey(e.key); return; }
+  const free = !t || t === document.body || t === document.documentElement;
+  if(e.key === "Enter" && free){ e.preventDefault(); dial(); }
+  else if(e.key === "Backspace" && free){ clearDigit(); }
+  else if(e.key === "Escape"){ if(st.mode !== "idle") hang(); }
+});
+
+/* ================= theme ================= */
+const root = document.documentElement, mq = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
+function curTheme(){ const a = root.getAttribute("data-theme"); return a === "dark" || a === "light" ? a : (mq && mq.matches ? "dark" : "light"); }
+function paintTheme(){ const c = curTheme(); $$(".theme button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t === c))); requestAnimationFrame(drawWave); }
+let savedTheme = null;
+try{ savedTheme = localStorage.getItem(KEY + "-theme"); }catch(e){}
+root.setAttribute("data-theme", savedTheme === "dark" ? "dark" : "light");
+$$(".theme button").forEach(b => b.addEventListener("click", () => {
+  root.setAttribute("data-theme", b.dataset.t);
+  try{ localStorage.setItem(KEY + "-theme", b.dataset.t); }catch(e){}
+  paintTheme();
+}));
+if(mq && mq.addEventListener) mq.addEventListener("change", paintTheme);
+new MutationObserver(paintTheme).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+paintTheme();
+
+/* ================= boot ================= */
+if(hadSave && S.ts){
+  const hrs = (Date.now() - S.ts) / 3600000;
+  if(hrs > .25){ const add = Math.min(2.5, hrs * .12); S.ripe = clamp(S.ripe + add, 1, 8); }
+  var away = hrs;
+}
+setSwitch($("#voiceSw"), S.voice);
+renderSkin(); renderAll(); renderHint(); drawDigits();
+sys("番号を打って「発信」。キーボードの 0〜9・*・# でも打てます。");
+if(typeof away === "number" && away > .25 && S.calls > 0){
+  sys("前回の通話から約 " + (away < 1 ? Math.round(away * 60) + " 分" : away.toFixed(1) + " 時間") + "。熟度が " + S.ripe.toFixed(1) + " まで進んでいます。");
+}
+save();
+})();
+</script>
+
+<script>
+(()=>{const report=()=>parent.postMessage({type:'banana-phone-height',height:Math.ceil(document.body.getBoundingClientRect().height)},location.origin);new ResizeObserver(report).observe(document.body);addEventListener('load',report);addEventListener('message',e=>{if(e.origin===location.origin&&e.source===parent&&e.data?.type==='banana-phone-measure')report()});document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&parent!==window){const target=document.querySelector(a.getAttribute('href'));if(target){e.preventDefault();parent.postMessage({type:'banana-phone-scroll',top:target.getBoundingClientRect().top+scrollY},location.origin)}}});})();
+</script></body></html>

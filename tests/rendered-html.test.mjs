@@ -39,7 +39,7 @@ test("server-renders every exhibition room", async () => {
   const expectations = [
     ["/profile", /第四の猿/],
     ["/protocol", /理由はいらない。ただし手順はある。/],
-    ["/phone", /ただし電話は必要。/],
+    ["/phone", /BananaPhone Ω/],
   ];
   for (const [pathname, expected] of expectations) {
     const response = await render(pathname);
