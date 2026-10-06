@@ -7,7 +7,7 @@ export default function ProfilePage() {
     <section className="subject-dossier" aria-labelledby="subject-name">
       <div className="subject-index">
         <p className="kicker">Subject / specimen 04</p>
-        <strong aria-hidden="true">04</strong>
+        <a className="subject-door" href="/corridor/" aria-label="04号室"><strong aria-hidden="true">04</strong></a>
         <div className="subject-index-meta"><span>PRIMATES</span><span>CHIMPANZEE</span></div>
       </div>
       <div className="subject-record">

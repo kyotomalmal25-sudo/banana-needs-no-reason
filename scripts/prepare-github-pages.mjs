@@ -13,8 +13,8 @@ await rm(output, { recursive: true, force: true });
 await cp(source, output, { recursive: true });
 await cp(protocolFallback, path.join(output, "github-pages-protocol.js"));
 
-for (const route of ["profile", "protocol", "phone"]) {
-  const html = await readFile(path.join(snapshots, `${route}.html`), "utf8");
+for (const route of ["profile", "protocol", "phone", "corridor", "corridor/a", "corridor/b", "corridor/c"]) {
+  const html = await readFile(path.join(snapshots, `${route.replaceAll("/", "-")}.html`), "utf8");
   const directory = path.join(output, route);
   await mkdir(directory, { recursive: true });
   const fallback = route === "protocol"
