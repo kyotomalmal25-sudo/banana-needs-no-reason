@@ -5,6 +5,7 @@ const links = [
   { id: "profile", href: "/profile", label: "Profile" },
   { id: "protocol", href: "/protocol", label: "Protocol" },
   { id: "phone", href: "/phone", label: "Phone" },
+  { id: "museum", href: "https://chimpanzee-museum-v2.pages.dev/", label: "Chimpanzee Museum", external: true },
 ];
 
 const fieldLinks = [
@@ -23,7 +24,9 @@ export function SiteShell({ children, current, plate }: { children: ReactNode; c
           <span className="mark-word">DBNR</span>
         </a>
         <nav aria-label="主要ページ">
-          {links.map((link) => <a href={link.href} key={link.id} className={current === link.id ? "active" : undefined} aria-current={current === link.id ? "page" : undefined}>{link.label}</a>)}
+          {links.map((link) => link.external
+            ? <a href={link.href} key={link.id} target="_blank" rel="noreferrer">{link.label}<span aria-hidden="true"> ↗</span></a>
+            : <a href={link.href} key={link.id} className={current === link.id ? "active" : undefined} aria-current={current === link.id ? "page" : undefined}>{link.label}</a>)}
         </nav>
         <span className="header-plate">{plate}</span>
       </header>
