@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LockedDoor } from "./locked-door";
 
 export const metadata: Metadata = { title: "廊下 — Does a Banana Need a Reason?" };
 
@@ -13,6 +14,7 @@ export default function CorridorPage() {
           <li><a href="/corridor/a/"><span>01</span>応接室</a></li>
           <li><a href="/corridor/b/"><span>02</span>資料室</a></li>
           <li><a href="/corridor/c/"><span>03</span>倉庫</a></li>
+          <LockedDoor />
         </ol>
       </div>
     </main>

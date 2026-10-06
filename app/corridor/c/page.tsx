@@ -11,6 +11,7 @@ export default function RoomC() {
         <p className="maze-text">段ボールが積まれ、どれも黄色い。一つだけ蓋が開いていて、中に何も入っていないのに、甘い匂いがする。壁際に小さな扉。</p>
         <ol className="maze-doors">
           <li><a href="/corridor/a/"><span>→</span>小さな扉</a></li>
+          <li><a href="https://kyotomalmal25-sudo.github.io/ai-web-gallery/" rel="noreferrer"><span>※</span>箱の底に、もう一つ箱</a></li>
         </ol>
       </div>
     </main>

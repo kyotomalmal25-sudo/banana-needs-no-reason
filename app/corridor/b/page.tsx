@@ -11,6 +11,7 @@ export default function RoomB() {
         <p className="maze-text">棚に同じ背表紙が並んでいる。どれも「バナナを食べる理由・第一版」。開くと、どれも白紙だった。奥に、もう一つ扉がある。</p>
         <ol className="maze-doors">
           <li><a href="/corridor/"><span>→</span>奥の扉</a></li>
+          <li><a href="https://debate.kyotomalmal25.workers.dev/" rel="noreferrer"><span>※</span>一冊だけ背表紙の違う綴じ込み</a></li>
         </ol>
       </div>
     </main>

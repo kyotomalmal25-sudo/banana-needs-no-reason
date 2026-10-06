@@ -323,6 +323,12 @@ export function ProtocolProcedure() {
   const [receipt, setReceipt] = useState("");
   const count = done.filter(Boolean).length;
 
+  // Finishing every step leaves a record that opens the locked door in /corridor.
+  useEffect(() => {
+    if (count !== procedureSteps.length) return;
+    try { localStorage.setItem("dbnr.protocol.done", "1"); } catch { /* storage unavailable */ }
+  }, [count]);
+
   const toggle = (index: number) => setDone((current) => current.map((value, i) => (i === index ? !value : value)));
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

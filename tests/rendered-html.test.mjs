@@ -42,6 +42,7 @@ test("server-renders every exhibition room", async () => {
     ["/phone", /BananaPhone Ω/],
     ["/corridor", /蛍光灯が一本だけ/],
     ["/corridor/a", /理由欄/],
+    ["/corridor/exit", /評価されなかったものの置き場所/],
   ];
   for (const [pathname, expected] of expectations) {
     const response = await render(pathname);

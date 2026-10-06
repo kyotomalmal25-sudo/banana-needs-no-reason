@@ -316,3 +316,6 @@ main { min-height:100vh; overflow:hidden; }
 .maze-doors a:hover,.maze-doors a:focus-visible { color:var(--yellow); padding-left:10px; outline:none; }
 .subject-door { color:inherit; cursor:default; display:block; text-decoration:none; }
 .subject-door:hover { color:var(--yellow-deep); }
+.maze-notice { border-left:2px solid #6f695c; color:#e9e4d4; padding-left:18px; }
+.maze-lock-note { color:#b9a46a; font-size:13px; line-height:1.9; margin:0 0 14px 44px; }
+.maze-door-locked { color:#8d8676; }

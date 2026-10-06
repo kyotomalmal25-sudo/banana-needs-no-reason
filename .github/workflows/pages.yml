@@ -52,6 +52,7 @@ jobs:
           curl --fail --silent --show-error http://127.0.0.1:4173/corridor/a/ -o github-pages-snapshots/corridor-a.html
           curl --fail --silent --show-error http://127.0.0.1:4173/corridor/b/ -o github-pages-snapshots/corridor-b.html
           curl --fail --silent --show-error http://127.0.0.1:4173/corridor/c/ -o github-pages-snapshots/corridor-c.html
+          curl --fail --silent --show-error http://127.0.0.1:4173/corridor/exit/ -o github-pages-snapshots/corridor-exit.html
       - name: Prepare project Pages path
         run: node scripts/prepare-github-pages.mjs
       - name: Configure Pages
